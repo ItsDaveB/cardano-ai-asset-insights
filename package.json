@@ -2,17 +2,17 @@
   "name": "ai-trading-insights",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app",
-    "dev": "nodemon app"
+    "start": "node index",
+    "dev": "nodemon index"
   },
   "nodemonConfig": {
     "watch": [
       "src"
     ],
-    "exec": "tsc && node ./dist/app.js",
+    "exec": "tsc && node ./dist/index.js",
     "ext": "ts,js,json"
   },
   "keywords": [],
