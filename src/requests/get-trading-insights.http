@@ -1,0 +1,3 @@
+### Get all trading insights (env-based)
+GET {{baseUrl}}/api/trading-insights
+Accept: application/json
