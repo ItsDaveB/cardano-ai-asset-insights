@@ -1,12 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index, Unique } from "typeorm";
 
 @Entity({ name: "trading_insights" })
+@Unique(["token_subject", "llm_provider", "timeframe_hours"])
 export class TradingInsightsEntity {
   @PrimaryGeneratedColumn()
   analysis_id: number;
 
   @Column("integer")
   timeframe_hours: number;
+
+  @Column({ type: "text" })
+  token_name: string;
 
   @Index()
   @Column({ type: "text" })
