@@ -12,7 +12,8 @@ export class TradingDataValidationService {
    * Joi schema definition for validating the input trading data.
    */
   private tradingDataSchema = Joi.object({
-    tokenSymbol: Joi.string().required(),
+    tokenSubject: Joi.string().required(),
+    tokenName: Joi.string().required(),
     timeframeHours: Joi.number().required(),
     ohlcData: Joi.array()
       .items(

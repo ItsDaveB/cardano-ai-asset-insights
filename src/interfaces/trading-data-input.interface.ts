@@ -1,5 +1,6 @@
 export interface TradingDataInput {
-  tokenSymbol: string;
+  tokenName: string;
+  tokenSubject: string;
   timeframeHours: number;
   ohlcData: {
     timestamp: string;

@@ -1,6 +1,8 @@
 import { LLMProvider, LLMResult } from "../../..//interfaces/provider.interface";
 
 export class GeminiV2FlashLiteProvider implements LLMProvider {
+  public readonly modelName = "gemini-v2-flash-lite";
+
   async generateInsights(data: any, instruction?: string): Promise<LLMResult> {
     const mockExtract = {
       resistance_levels: [43250, 44500, 46000],
@@ -24,7 +26,7 @@ export class GeminiV2FlashLiteProvider implements LLMProvider {
     return {
       analysisExtract: mockExtract,
       fullOutput: mockFullOutput.trim(),
-      llmProvider: "gemini-v2-flash-lite",
+      llmProvider: this.modelName,
     };
   }
 }

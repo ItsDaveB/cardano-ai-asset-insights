@@ -19,6 +19,7 @@ export class TradingInsightsCronJob {
 
   start() {
     cron.schedule(this.cronSchedule, async () => {
+      const startTime = Date.now();
       logger.info("AI Analysis batch process started.");
 
       try {
@@ -29,12 +30,13 @@ export class TradingInsightsCronJob {
         const tradingDataInput = this.tradingDataValidationService.validate(tradingData);
 
         // Step 3: Generate AI Insights from all LLM providers
-        const llmResultsArray = await this.llmService.getInsightsFromAllProviders(tradingDataInput);
+        const tradingInsights = await this.llmService.getInsightsFromAllProviders(tradingDataInput);
 
         // Step 4: Store Analysis Results
-        for (const item of llmResultsArray) {
-          await this.tradingInsightsRepository.save({
-            token_subject: tradingDataInput.tokenSymbol,
+        for (const item of tradingInsights) {
+          await this.tradingInsightsRepository.upsertInsight({
+            token_subject: tradingDataInput.tokenSubject,
+            token_name: tradingDataInput.tokenName,
             timeframe_hours: tradingDataInput.timeframeHours,
             full_output: item.result.fullOutput,
             analysis_extract: item.result.analysisExtract,
@@ -42,10 +44,12 @@ export class TradingInsightsCronJob {
           });
         }
 
-        logger.info("AI Analysis batch process completed successfully.");
+        const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+        logger.info(`AI Analysis batch process completed successfully in ${duration} seconds.`);
       } catch (error) {
-        logger.error("Error during AI Analysis batch process:", error);
-        throw error;
+        const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+        logger.error(`Error during AI Analysis batch process after ${duration} seconds:`, error);
+        process.exit(1);
       }
     });
   }

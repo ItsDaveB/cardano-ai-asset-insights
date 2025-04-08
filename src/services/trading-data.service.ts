@@ -11,7 +11,8 @@ export class TradingDataService {
       // const response = await axios.get(this.tradingDataEndpoint ?? '');
 
       const mockData: TradingDataInput = {
-        tokenSymbol: "IAG",
+        tokenName: "SNEK",
+        tokenSubject: "12345",
         timeframeHours: 12,
         ohlcData: Array.from({ length: 126 }, (_, i) => ({
           timestamp: new Date(Date.now() - i * 4 * 3600000).toISOString(),
