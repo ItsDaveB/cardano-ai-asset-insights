@@ -1,4 +1,5 @@
 export interface LLMProvider {
+  readonly modelName: string;
   generateInsights(data: any, instruction?: string): Promise<LLMResult>;
 }
 
