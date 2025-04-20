@@ -30,7 +30,7 @@ export class TradingInsightsController {
                 expiresInSeconds: timeLeftSeconds,
               },
             }
-          : cachedData;
+          : { data: cachedData };
 
         res.status(200).json(response);
         return;
@@ -50,7 +50,7 @@ export class TradingInsightsController {
               expiresInSeconds: CACHE_TTL_SECONDS,
             },
           }
-        : insights;
+        : { data: insights };
 
       res.status(200).json(response);
       return;

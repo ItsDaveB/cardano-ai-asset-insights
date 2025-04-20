@@ -1,3 +1,8 @@
+### Get all trading insights With Metadata (Cache Details) (env-based)
+GET {{baseUrl}}/api/trading-insights?includeMeta=true
+Accept: application/json
+
+
 ### Get all trading insights (env-based)
 GET {{baseUrl}}/api/trading-insights
 Accept: application/json
