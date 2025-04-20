@@ -1,5 +1,7 @@
 import NodeCache from "node-cache";
 
-const cache = new NodeCache({ stdTTL: 3600 }); // 1 hour (Seconds)
+export const CACHE_TTL_SECONDS = parseInt(process.env.CACHE_TTL_SECONDS || "3600", 10);
+
+const cache = new NodeCache({ stdTTL: CACHE_TTL_SECONDS });
 
 export default cache;
