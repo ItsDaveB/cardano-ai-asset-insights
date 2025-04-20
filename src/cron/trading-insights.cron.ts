@@ -32,6 +32,7 @@ export class TradingInsightsCronJob {
         // Step 3: Generate AI Insights from all LLM providers
         const tradingInsights = await this.llmService.getInsightsFromAllProviders(tradingDataInput);
 
+        let storedCount = 0;
         // Step 4: Store Analysis Results
         for (const item of tradingInsights) {
           await this.tradingInsightsRepository.upsertInsight({
@@ -42,10 +43,14 @@ export class TradingInsightsCronJob {
             analysis_extract: item.result.analysisExtract,
             llm_provider: item.provider,
           });
+
+          storedCount++;
         }
 
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-        logger.info(`AI Analysis batch process completed successfully in ${duration} seconds.`);
+        logger.info(
+          `AI Analysis batch process completed successfully in ${duration} seconds. Upserted ${storedCount} insights.`
+        );
       } catch (error) {
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
         logger.error(`Error during AI Analysis batch process after ${duration} seconds:`, error);
