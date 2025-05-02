@@ -1,6 +1,6 @@
 import { Service } from "typedi";
 import { LLMProvider } from "../../interfaces/provider.interface";
-import { GeminiV2FlashLiteProvider } from "./providers/gemini.provider";
+import { GeminiV2FlashLiteProvider } from "./providers/gcp/gemini-v2-flash-lite.provider";
 import { TradingDataInput } from "src/interfaces/trading-data-input.interface";
 
 @Service()
@@ -15,11 +15,11 @@ export class LLMService {
     };
   }
 
-  async getInsightsFromAllProviders(data: TradingDataInput, instruction?: string) {
+  async getInsightsFromAllProviders(data: TradingDataInput) {
     const providerResults = await Promise.all(
       Object.entries(this.providers).map(async ([providerModelName, provider]) => ({
         provider: providerModelName,
-        result: await provider.generateInsights(data, instruction),
+        result: await provider.generateInsights(data),
       }))
     );
 
