@@ -1,10 +1,11 @@
+import { TradingDataInput } from "./trading-data-input.interface";
+
 export interface LLMProvider {
   readonly modelName: string;
-  generateInsights(data: any, instruction?: string): Promise<LLMResult>;
+  generateInsights(data: TradingDataInput): Promise<LLMResult>;
 }
 
 export interface LLMResult {
   fullOutput: string;
-  analysisExtract: Record<string, any>; // fully generic
-  llmProvider: string;
+  analysisExtract: Record<string, any>;
 }

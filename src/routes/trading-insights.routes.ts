@@ -5,8 +5,8 @@ import { TradingInsightsService } from "../services/trading-insights.service";
 
 const router = Router();
 
-const insightsService = Container.get(TradingInsightsService);
-const controller = new TradingInsightsController(insightsService);
+const tradingInsightsService = Container.get(TradingInsightsService);
+const controller = new TradingInsightsController(tradingInsightsService);
 
 router.get("/trading-insights", controller.getAllTradingInsights.bind(controller));
 

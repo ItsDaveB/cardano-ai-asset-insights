@@ -4,8 +4,8 @@ import TradingDataService from "../services/trading-data.service";
 import TradingDataValidationService from "../services/trading-data-validation.service";
 import { LLMService } from "../services/llm/llm.service";
 import { TradingInsightsRepository } from "../repositories/trading-insights.repository";
-import logger from "../utils/logger";
 import TokenCriteriaService from "../services/token-criteria.service";
+import logger from "../utils/logger";
 
 @Service()
 export class TradingInsightsCronJob {

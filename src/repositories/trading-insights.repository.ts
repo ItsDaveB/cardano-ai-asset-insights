@@ -2,11 +2,7 @@ import { TradingInsightsEntity } from "../entities/trading-insights.entity";
 import { Service } from "typedi";
 import { AppDataSource } from "../database/datasource";
 
-const CONFLICT_FIELDS: (keyof TradingInsightsEntity)[] = [
-  "token_subject",
-  "llm_provider",
-  "timeframe_hours",
-];
+const CONFLICT_FIELDS: (keyof TradingInsightsEntity)[] = ["token_subject", "llm_provider", "timeframe_hours"];
 
 @Service()
 export class TradingInsightsRepository {
@@ -18,7 +14,7 @@ export class TradingInsightsRepository {
 
   getLatestTradingInsights(limit: number) {
     return this.repo.find({
-      order: { created_at: "DESC" },
+      order: { created_at: "ASC" },
       take: limit,
     });
   }

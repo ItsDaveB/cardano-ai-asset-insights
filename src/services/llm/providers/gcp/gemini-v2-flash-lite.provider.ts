@@ -78,7 +78,6 @@ export class GeminiV2FlashLiteProvider implements LLMProvider {
     return {
       analysisExtract: parsedOutput.analysis_extract,
       fullOutput: text,
-      llmProvider: this.modelName,
     };
   }
 

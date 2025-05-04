@@ -24,7 +24,7 @@ export class TradingDataValidationService {
           high: Joi.number().positive().required(),
           low: Joi.number().positive().required(),
           close: Joi.number().positive().required(),
-          volume: Joi.number().positive().optional(),
+          volume: Joi.number().optional(),
         })
       )
       .min(1)
