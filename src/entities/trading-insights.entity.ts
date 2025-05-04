@@ -6,8 +6,8 @@ export class TradingInsightsEntity {
   @PrimaryGeneratedColumn()
   analysis_id: number;
 
-  @Column("integer")
-  timeframe_hours: number;
+  @Column("text")
+  timeframe_hours: string;
 
   @Column({ type: "text" })
   token_name: string;

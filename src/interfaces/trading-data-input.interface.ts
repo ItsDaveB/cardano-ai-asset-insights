@@ -1,12 +1,13 @@
 export interface TradingDataInput {
   tokenName: string;
   tokenSubject: string;
-  timeframeHours: number;
+  timeframeHours: string;
+  daysOfData: string;
   ohlcData: OHLCVEntry[];
 }
 
 export interface OHLCVEntry {
-  timestamp: string;
+  time: string;
   open: number;
   high: number;
   low: number;

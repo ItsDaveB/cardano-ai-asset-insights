@@ -1,30 +1,39 @@
-// import axios from 'axios';
+import axios from "axios";
 import { Service } from "typedi";
-import { TradingDataInput } from "../interfaces/trading-data-input.interface";
+import { OHLCVEntry, TradingDataInput } from "../interfaces/trading-data-input.interface";
+import { TopVolumeToken } from "src/interfaces/top-volume.token";
 
 @Service()
 export class TradingDataService {
-  // private readonly tradingDataEndpoint = process.env.TRADING_DATA_API_ENDPOINT;
-
-  async fetchTradingData(): Promise<TradingDataInput> {
+  async fetchTradingData(topVolumeToken: TopVolumeToken): Promise<TradingDataInput> {
     try {
-      // const response = await axios.get(this.tradingDataEndpoint ?? '');
+      const interval = process.env.OHLC_INTERVAL ?? "4h";
+      const daysOfTradingData = process.env.OHLC_DAYS ?? "21";
+      const url = `https://openapi.taptools.io/api/v1/token/ohlcv?unit=${topVolumeToken.unit}&interval=${interval}&numIntervals=${daysOfTradingData}`;
 
-      const mockData: TradingDataInput = {
-        tokenName: "SNEK",
-        tokenSubject: "12345",
-        timeframeHours: 12,
-        ohlcData: Array.from({ length: 126 }, (_, i) => ({
-          timestamp: new Date(Date.now() - i * 4 * 3600000).toISOString(),
-          open: 1.2 + Math.random() * 0.1,
-          high: 1.25 + Math.random() * 0.1,
-          low: 1.15 + Math.random() * 0.1,
-          close: 1.22 + Math.random() * 0.1,
-          volume: Math.random() > 0.5 ? 10000 + Math.floor(Math.random() * 5000) : undefined,
+      const response = await axios.get(url, {
+        headers: {
+          "x-api-key": process.env.TAPTOOLS_API_KEY,
+        },
+      });
+
+      const responseData = response.data;
+
+      const data: TradingDataInput = {
+        tokenName: topVolumeToken.ticker ?? "Unknown",
+        tokenSubject: topVolumeToken.unit ?? "",
+        timeframeHours: interval,
+        daysOfData: daysOfTradingData,
+        ohlcData: responseData.map((item: OHLCVEntry) => ({
+          time: item.time,
+          open: item.open,
+          high: item.high,
+          low: item.low,
+          close: item.close,
+          volume: item.volume,
         })),
       };
 
-      const data = mockData;
       return data;
     } catch (error) {
       console.error("Error fetching trading data:", error);

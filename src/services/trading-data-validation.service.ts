@@ -14,11 +14,12 @@ export class TradingDataValidationService {
   private tradingDataSchema = Joi.object({
     tokenSubject: Joi.string().required(),
     tokenName: Joi.string().required(),
-    timeframeHours: Joi.number().required(),
+    timeframeHours: Joi.string().required(),
+    daysOfData: Joi.string().required(),
     ohlcData: Joi.array()
       .items(
         Joi.object({
-          timestamp: Joi.date().iso().required(),
+          time: Joi.date().timestamp("unix").required(),
           open: Joi.number().positive().required(),
           high: Joi.number().positive().required(),
           low: Joi.number().positive().required(),
@@ -42,9 +43,7 @@ export class TradingDataValidationService {
     });
 
     if (error) {
-      throw new Error(
-        `TradingDataValidation Error: ${error.details.map((e) => e.message).join("; ")}`
-      );
+      throw new Error(`TradingDataValidation Error: ${error.details.map((e) => e.message).join("; ")}`);
     }
 
     return value;

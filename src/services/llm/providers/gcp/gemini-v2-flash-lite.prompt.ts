@@ -2,7 +2,7 @@ import { OHLCVEntry } from "src/interfaces/trading-data-input.interface";
 
 interface GeminiPromptData {
   token_name: string;
-  timeframe_hours: number;
+  timeframe_hours: string;
   formatted_ohlcv_data: OHLCVEntry[];
 }
 
@@ -17,7 +17,7 @@ You are an expert financial analyst specializing in cryptocurrency trading and m
 Analyze the following OHLCV data for a Cardano Native Asset:
 
 Token: ${token_name}
-Timeframe: Last ${timeframe_hours} hours
+Timeframe: Last ${timeframe_hours}
 OHLCV Data:
 ${formatted_ohlcv_data}
 
