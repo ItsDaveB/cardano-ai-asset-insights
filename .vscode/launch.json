@@ -8,6 +8,10 @@
             "type": "node",
             "request": "launch",
             "name": "Debug API Server",
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
             "skipFiles": [
                 "<node_internals>/**"
             ],
@@ -20,6 +24,10 @@
             "type": "node",
             "request": "launch",
             "name": "Debug Cron Runner",
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
             "skipFiles": [
                 "<node_internals>/**"
             ],

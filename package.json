@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start:api": "nodemon api-server"
+    "dev:api": "nodemon --watch src --exec \"tsc && node dist/api-server.js\"",
+    "dev:cron": "nodemon --watch src --exec \"tsc && node dist/cron-runner.js\"",
+    "dev:both": "concurrently \"npm run dev:api\" \"npm run dev:cron\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {
     "watch": [
@@ -35,6 +37,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.14",
     "@types/node-cron": "^3.0.11",
+    "concurrently": "^9.1.2",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
