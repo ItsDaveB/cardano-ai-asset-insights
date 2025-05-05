@@ -13,6 +13,9 @@ export class LLMService {
     this.providers = {
       [geminiV2FlashLiteProvider.modelName]: geminiV2FlashLiteProvider,
     };
+
+    const supported = Object.keys(this.providers);
+    console.log(`[LLMService] Supported providers: ${supported.join(", ")}`);
   }
 
   async getInsightsFromAllProviders(data: TradingDataInput) {

@@ -11,6 +11,9 @@ export class TradingDataService {
       const daysOfTradingData = process.env.OHLC_DAYS ?? "21";
       const url = `https://openapi.taptools.io/api/v1/token/ohlcv?unit=${topVolumeToken.unit}&interval=${interval}&numIntervals=${daysOfTradingData}`;
 
+      console.log(`[TradingData] Fetching OHLCV data for token: ${topVolumeToken.ticker}`);
+      console.log(`[TradingData] Endpoint: ${url}`);
+
       const response = await axios.get(url, {
         headers: {
           "x-api-key": process.env.TAPTOOLS_API_KEY,
@@ -18,6 +21,8 @@ export class TradingDataService {
       });
 
       const responseData = response.data;
+
+      console.log(`[TradingData] Received ${responseData.length} OHLCV entries for ${topVolumeToken.ticker}`);
 
       const data: TradingDataInput = {
         tokenName: topVolumeToken.ticker ?? "Unknown",
@@ -36,7 +41,7 @@ export class TradingDataService {
 
       return data;
     } catch (error) {
-      console.error("Error fetching trading data:", error);
+      console.error(`[TradingData] Error fetching OHLCV data for ${topVolumeToken.ticker}:`, error);
       throw new Error("Failed to fetch trading data");
     }
   }

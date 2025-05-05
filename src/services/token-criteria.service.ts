@@ -9,9 +9,23 @@ export class TokenCriteriaService {
   async fetchTopVolumeTokens(): Promise<TopVolumeToken[]> {
     try {
       const maxTokensToAnalyze = process.env.MAX_TOKENS_TO_ANALYZE ?? "15";
+      const apiKey = process.env.TAPTOOLS_API_KEY;
+
+      console.log("[TokenCriteria] Fetching top volume tokens");
+      console.log("[TokenCriteria] Endpoint:", this.endpoint);
+      console.log("[TokenCriteria] Params:", {
+        timeframe: "24h",
+        page: 1,
+        perPage: maxTokensToAnalyze,
+      });
+
+      if (!apiKey) {
+        console.warn("[TokenCriteria] TAPTOOLS_API_KEY is not set");
+      }
+
       const response = await axios.get(this.endpoint, {
         headers: {
-          "x-api-key": process.env.TAPTOOLS_API_KEY,
+          "x-api-key": apiKey,
         },
         params: {
           timeframe: "24h",
@@ -27,9 +41,11 @@ export class TokenCriteriaService {
         volume: item.volume,
       }));
 
+      console.log(`[TokenCriteria] Successfully fetched ${tokens.length} tokens`);
+
       return tokens;
     } catch (error) {
-      console.error("Error fetching top volume tokens:", error);
+      console.error("[TokenCriteria] Error fetching top volume tokens:", error);
       throw new Error("Failed to fetch top volume tokens");
     }
   }

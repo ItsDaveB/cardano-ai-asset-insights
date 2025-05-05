@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev:api": "nodemon --watch src --exec \"tsc && node dist/api-server.js\"",
-    "dev:cron": "nodemon --watch src --exec \"tsc && node dist/cron-runner.js\"",
-    "dev:both": "concurrently \"npm run dev:api\" \"npm run dev:cron\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run:api": "nodemon --watch src --exec \"tsc && node dist/api-server.js\"",
+    "debug:api": "nodemon --watch src --exec \"tsc && node --inspect dist/api-server.js\"",
+    "run:cron": "nodemon --watch src --exec \"tsc && node dist/cron-runner.js\"",
+    "debug:cron": "nodemon --watch src --exec \"tsc && node --inspect dist/cron-runner.js\"",
+    "run:both": "concurrently \"npm run debug:api\" \"npm run run:cron\""
   },
   "nodemonConfig": {
     "watch": [
       "src"
     ],
-    "exec": "tsc && node ./dist/api-server.js",
     "ext": "ts,js,json"
   },
   "keywords": [],

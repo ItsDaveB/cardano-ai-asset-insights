@@ -8,9 +8,6 @@ import { Service } from "typedi";
  */
 @Service()
 export class TradingDataValidationService {
-  /**
-   * Joi schema definition for validating the input trading data.
-   */
   private tradingDataSchema = Joi.object({
     tokenSubject: Joi.string().required(),
     tokenName: Joi.string().required(),
@@ -37,15 +34,19 @@ export class TradingDataValidationService {
    * @returns The validated data or throws a validation error.
    */
   validate(data: TradingDataInput): TradingDataInput {
+    console.log("[TradingDataValidation] Validating trading data...");
+
     const { error, value } = this.tradingDataSchema.validate(data, {
       abortEarly: false,
       allowUnknown: false,
     });
 
     if (error) {
+      console.warn("[TradingDataValidation] Validation failed.");
       throw new Error(`TradingDataValidation Error: ${error.details.map((e) => e.message).join("; ")}`);
     }
 
+    console.log("[TradingDataValidation] Validation successful.");
     return value;
   }
 }

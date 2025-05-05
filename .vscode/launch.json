@@ -1,48 +1,35 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug API Server",
+            "name": "Debug API",
+            "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "-r",
-                "ts-node/register"
+                "run",
+                "debug:api"
             ],
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/src/api-server.ts",
-            "outFiles": [
-                "${workspaceFolder}/**/*.js"
-            ]
+            "console": "integratedTerminal"
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug Cron Runner",
+            "name": "Debug Cron",
+            "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "-r",
-                "ts-node/register"
+                "run",
+                "debug:cron"
             ],
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/src/cron-runner.ts",
-            "outFiles": [
-                "${workspaceFolder}/**/*.js"
-            ]
+            "console": "integratedTerminal"
         },
     ],
     "compounds": [
         {
             "name": "Debug API and Cron",
             "configurations": [
-                "Debug API Server",
-                "Debug Cron Runner"
+                "Debug API",
+                "Debug Cron"
             ]
         }
     ]
