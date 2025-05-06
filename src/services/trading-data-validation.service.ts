@@ -12,7 +12,7 @@ export class TradingDataValidationService {
     tokenSubject: Joi.string().required(),
     tokenName: Joi.string().required(),
     timeframeHours: Joi.string().required(),
-    daysOfData: Joi.string().required(),
+    numberOfIntervals: Joi.number().required(),
     ohlcData: Joi.array()
       .items(
         Joi.object({

@@ -2,7 +2,7 @@ export interface TradingDataInput {
   tokenName: string;
   tokenSubject: string;
   timeframeHours: string;
-  daysOfData: string;
+  numberOfIntervals: number;
   ohlcData: OHLCVEntry[];
 }
 

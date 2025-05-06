@@ -1,26 +1,34 @@
 import { OHLCVEntry } from "src/interfaces/trading-data-input.interface";
 
 interface GeminiPromptData {
-  token_name: string;
-  timeframe_hours: string;
-  formatted_ohlcv_data: OHLCVEntry[];
+  tokenName: string;
+  timeframeHours: string;
+  numberOfIntervals: number;
+  ohlcvData: OHLCVEntry[];
 }
 
 export const generateGeminiPrompt = ({
-  token_name,
-  timeframe_hours,
-  formatted_ohlcv_data,
+  tokenName,
+  timeframeHours,
+  numberOfIntervals,
+  ohlcvData,
 }: GeminiPromptData): string => {
+  const formattedData = JSON.stringify(ohlcvData, null, 2);
+
   return `
 You are an expert financial analyst specializing in cryptocurrency trading and market behavior.
 
-Analyze the following OHLCV data for a Cardano Native Asset:
+Analyze the full OHLCV data for the following Cardano native asset:
 
-Token: ${token_name}
-Timeframe: Last ${timeframe_hours}
+Token: ${tokenName}  
+Timeframe: ${timeframeHours} hours over ${numberOfIntervals} intervals.
+
 OHLCV Data:
-${formatted_ohlcv_data}
+${formattedData}
 
-Provide your insights in a structured JSON format that adheres to the system-defined schema. Your analysis should cover trend, sentiment, volatility, volume behavior, pattern signals, and a suggested action.
+Based on the provided data, generate a structured JSON response that strictly adheres to the system-defined schema passed with this request.  
+- Do not include any commentary or output outside the JSON.  
+- Populate all fields as thoroughly as possible, respecting the specified types and maximum item counts defined in the schema.  
+- If a value cannot be determined confidently, provide a best-effort estimate or use "None" or null where appropriate.
 `.trim();
 };
