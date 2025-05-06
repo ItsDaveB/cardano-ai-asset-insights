@@ -33,6 +33,7 @@ export class GeminiV2FlashLiteProvider implements LLMProvider {
     };
 
     const accessToken = await this.getAccessToken();
+    logger.info(`[LLMService] GoogleAuth sucessfully setup, Access Token Received.`);
     logger.info(`[LLMService] Sending request to ${this.modelName}, for token ${data.tokenName}.`);
     const response = await axios.post<GeminiApiResponse>(this.endpoint, requestBody, {
       headers: {

@@ -13,7 +13,9 @@ export class TradingInsightsController {
       const cacheKey = `trading-insights:${limit}`;
 
       const cachedData = cache.get(cacheKey);
-      if (cachedData) {
+      const isValidCache = Array.isArray(cachedData) ? cachedData.length > 0 : !!cachedData;
+
+      if (isValidCache) {
         const ttl = cache.getTtl(cacheKey);
         const timeLeftSeconds = ttl ? Math.max(0, Math.floor((ttl - Date.now()) / 1000)) : 0;
         const timeLeftMinutes = (timeLeftSeconds / 60).toFixed(1);
