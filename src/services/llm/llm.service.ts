@@ -2,6 +2,7 @@ import { Service } from "typedi";
 import { LLMProvider } from "../../interfaces/provider.interface";
 import { GeminiV2FlashLiteProvider } from "./providers/gcp/gemini-v2-flash-lite.provider";
 import { TradingDataInput } from "src/interfaces/trading-data-input.interface";
+import logger from "../../utils/logger";
 
 @Service()
 export class LLMService {
@@ -15,7 +16,7 @@ export class LLMService {
     };
 
     const supported = Object.keys(this.providers);
-    console.log(`[LLMService] Supported providers: ${supported.join(", ")}`);
+    logger.info(`[LLMService] Supported LLM provider integrations: ${supported.join(", ")}`);
   }
 
   async getInsightsFromAllProviders(data: TradingDataInput) {

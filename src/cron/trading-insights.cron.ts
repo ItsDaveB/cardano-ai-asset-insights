@@ -50,6 +50,7 @@ export class TradingInsightsCronJob {
         logger.info(
           `AI Analysis batch process completed successfully in ${duration} seconds. Upserted ${storedCount} insights.`
         );
+        process.exit(0);
       } catch (error) {
         const duration = ((Date.now() - startTime) / 1000).toFixed(2);
         logger.error(`Error during AI Analysis batch process after ${duration} seconds:`, error);

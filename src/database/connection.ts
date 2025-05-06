@@ -1,11 +1,12 @@
+import logger from "../utils/logger";
 import { AppDataSource } from "./datasource";
 
 export const initializeDatabase = async () => {
   try {
     await AppDataSource.initialize();
-    console.log("✅ Database connected");
+    logger.info("✅ Database connected");
   } catch (error) {
-    console.error("❌ Failed to initialize database:", error);
+    logger.error("❌ Failed to initialize database:", error);
     throw error;
   }
 };

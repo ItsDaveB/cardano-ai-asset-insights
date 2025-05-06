@@ -5,6 +5,7 @@ import { generateGeminiPrompt } from "./gemini-v2-flash-lite.prompt";
 import { TradingDataInput } from "../../../../interfaces/trading-data-input.interface";
 import { llmInsightResponseSchema } from "../../../../schemas/llm-output-schema";
 import { GeminiApiCandidate, GeminiApiResponse } from "./gemini.types";
+import logger from "../../../../utils/logger";
 
 export class GeminiV2FlashLiteProvider implements LLMProvider {
   public readonly modelName = "gemini-2.0-flash-lite-001";
@@ -32,12 +33,15 @@ export class GeminiV2FlashLiteProvider implements LLMProvider {
     };
 
     const accessToken = await this.getAccessToken();
+    logger.info(`[LLMService] Sending request to ${this.modelName}, for token ${data.tokenName}.`);
     const response = await axios.post<GeminiApiResponse>(this.endpoint, requestBody, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
     });
+
+    logger.info(`[LLMService] Response received from ${this.modelName}, for token ${data.tokenName}.`);
 
     const candidates: GeminiApiCandidate[] = response.data.candidates ?? [];
 

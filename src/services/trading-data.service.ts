@@ -2,6 +2,7 @@ import axios from "axios";
 import { Service } from "typedi";
 import { OHLCVEntry, TradingDataInput } from "../interfaces/trading-data-input.interface";
 import { TopVolumeToken } from "src/interfaces/top-volume.token";
+import logger from "../utils/logger";
 
 @Service()
 export class TradingDataService {
@@ -11,8 +12,10 @@ export class TradingDataService {
       const numberOfIntervals = Number(process.env.OHLC_NUM_OF_INTERVALS ?? 126); //  24 ÷ 4 = 6 candles per day, 21 days × 6 = 126 candles.
       const url = `https://openapi.taptools.io/api/v1/token/ohlcv?unit=${topVolumeToken.unit}&interval=${interval}&numIntervals=${numberOfIntervals}`;
 
-      console.log(`[TradingData] Fetching OHLCV data for token: ${topVolumeToken.ticker}`);
-      console.log(`[TradingData] Endpoint: ${url}`);
+      logger.info(
+        `[TradingData] Fetching OHLCV data for token: ${topVolumeToken.ticker}, interval: ${interval}, numberOfIntervals: ${numberOfIntervals}.`
+      );
+      logger.info(`[TradingData] Endpoint: ${url}`);
 
       const response = await axios.get(url, {
         headers: {
@@ -22,7 +25,9 @@ export class TradingDataService {
 
       const responseData = response.data;
 
-      console.log(`[TradingData] Received ${responseData.length} OHLCV entries for ${topVolumeToken.ticker}`);
+      logger.info(
+        `[TradingData] Received ${responseData.length} OHLCV entries for token: ${topVolumeToken.ticker}, interval: ${interval}, numberOfIntervals: ${numberOfIntervals}.`
+      );
 
       const data: TradingDataInput = {
         tokenName: topVolumeToken.ticker ?? "Unknown",
@@ -41,7 +46,7 @@ export class TradingDataService {
 
       return data;
     } catch (error) {
-      console.error(`[TradingData] Error fetching OHLCV data for ${topVolumeToken.ticker}:`, error);
+      logger.error(`[TradingData] Error fetching OHLCV data for ${topVolumeToken.ticker}:`, error);
       throw new Error("Failed to fetch trading data");
     }
   }

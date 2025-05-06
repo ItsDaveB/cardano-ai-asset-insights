@@ -1,6 +1,7 @@
 import axios from "axios";
 import { TopVolumeToken } from "../interfaces/top-volume.token";
 import { Service } from "typedi";
+import logger from "../utils/logger";
 
 @Service()
 export class TokenCriteriaService {
@@ -8,19 +9,19 @@ export class TokenCriteriaService {
 
   async fetchTopVolumeTokens(): Promise<TopVolumeToken[]> {
     try {
-      const maxTokensToAnalyze = process.env.MAX_TOKENS_TO_ANALYZE ?? "15";
+      const maxTokensToAnalyze = process.env.MAX_TOKENS_TO_ANALYZE ?? "3";
       const apiKey = process.env.TAPTOOLS_API_KEY;
 
-      console.log("[TokenCriteria] Fetching top volume tokens");
-      console.log("[TokenCriteria] Endpoint:", this.endpoint);
-      console.log("[TokenCriteria] Params:", {
+      logger.info("[TokenCriteria] Fetching top volume tokens");
+      logger.info("[TokenCriteria] Endpoint:", this.endpoint);
+      logger.info("[TokenCriteria] Params:", {
         timeframe: "24h",
         page: 1,
         perPage: maxTokensToAnalyze,
       });
 
       if (!apiKey) {
-        console.warn("[TokenCriteria] TAPTOOLS_API_KEY is not set");
+        logger.warn("[TokenCriteria] TAPTOOLS_API_KEY is not set");
       }
 
       const response = await axios.get(this.endpoint, {
@@ -41,11 +42,12 @@ export class TokenCriteriaService {
         volume: item.volume,
       }));
 
-      console.log(`[TokenCriteria] Successfully fetched ${tokens.length} tokens`);
+      const tokenTickers = tokens.map((t) => t.ticker).join(", ");
 
+      logger.info(`[TokenCriteria] Successfully fetched ${tokens.length} tokens: [${tokenTickers}].`);
       return tokens;
     } catch (error) {
-      console.error("[TokenCriteria] Error fetching top volume tokens:", error);
+      logger.error("[TokenCriteria] Error fetching top volume tokens:", error);
       throw new Error("Failed to fetch top volume tokens");
     }
   }

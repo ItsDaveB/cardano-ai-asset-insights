@@ -1,6 +1,7 @@
 import Joi from "joi";
 import { TradingDataInput } from "../interfaces/trading-data-input.interface";
 import { Service } from "typedi";
+import logger from "../utils/logger";
 
 /**
  * TradingDataValidationService
@@ -34,7 +35,7 @@ export class TradingDataValidationService {
    * @returns The validated data or throws a validation error.
    */
   validate(data: TradingDataInput): TradingDataInput {
-    console.log("[TradingDataValidation] Validating trading data...");
+    logger.info(`[TradingDataValidation] Validating trading data for token: ${data.tokenName}.`);
 
     const { error, value } = this.tradingDataSchema.validate(data, {
       abortEarly: false,
@@ -42,11 +43,11 @@ export class TradingDataValidationService {
     });
 
     if (error) {
-      console.warn("[TradingDataValidation] Validation failed.");
+      console.warn(`[TradingDataValidation] Validation failed for token: ${data.tokenName}.`);
       throw new Error(`TradingDataValidation Error: ${error.details.map((e) => e.message).join("; ")}`);
     }
 
-    console.log("[TradingDataValidation] Validation successful.");
+    logger.info(`[TradingDataValidation] Validation successful for token ${data.tokenName}.`);
     return value;
   }
 }
