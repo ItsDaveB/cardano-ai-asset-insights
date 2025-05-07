@@ -29,6 +29,7 @@ export class GeminiV2FlashLiteProvider implements LLMProvider {
         maxOutputTokens: 1024,
         topP: 0.8,
         topK: 40,
+        candidateCount: 3,
       },
     };
 
