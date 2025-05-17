@@ -1,7 +1,7 @@
 import { Service } from "typedi";
 import { LLMProvider } from "../../interfaces/provider.interface";
 import { GeminiV2FlashLiteProvider } from "./providers/gcp/gemini-v2-flash-lite.provider";
-import { TradingDataInput } from "src/interfaces/trading-data-input.interface";
+import { TradingDataInput } from "../../interfaces/trading-data-input.interface";
 import logger from "../../utils/logger";
 
 @Service()

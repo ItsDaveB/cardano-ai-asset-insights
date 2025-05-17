@@ -1,4 +1,4 @@
-import { OHLCVEntry } from "src/interfaces/trading-data-input.interface";
+import { OHLCVEntry } from "../../../../interfaces/trading-data-input.interface";
 
 interface GeminiPromptData {
   tokenName: string;

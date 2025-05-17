@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Service } from "typedi";
 import { OHLCVEntry, TradingDataInput } from "../interfaces/trading-data-input.interface";
-import { TopVolumeToken } from "src/interfaces/top-volume.token";
+import { TopVolumeToken } from "../interfaces/top-volume.token";
 import logger from "../utils/logger";
 
 @Service()

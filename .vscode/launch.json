@@ -5,6 +5,7 @@
             "type": "node",
             "request": "launch",
             "name": "Debug API",
+            "cwd": "${workspaceFolder}/backend",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run",
@@ -16,6 +17,7 @@
             "type": "node",
             "request": "launch",
             "name": "Debug Cron",
+            "cwd": "${workspaceFolder}/backend",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run",
