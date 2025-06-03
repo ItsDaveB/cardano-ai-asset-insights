@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { useTradingInsights } from "../hooks/useTradingInsights";
+import { AnalysisData, NestedStructure, PrimitiveValue, useTradingInsights } from "../hooks/useTradingInsights";
+import Image from "next/image";
+import { getLogoByTicker } from "../utils/tokenImages";
 
 export const TradingInsightsList = () => {
   const [limit, setLimit] = useState(10);
@@ -15,21 +17,397 @@ export const TradingInsightsList = () => {
 
   const insights = Array.isArray(data) ? data : data?.data;
 
-  return (
-    <section>
-      <ul>
-        {insights?.map((insight, index) => (
-          <li key={insight.analysis_id}>
-            {index + 1}. {insight.token_name}
-          </li>
-        ))}
-      </ul>
+  function getAnalysisExtractByKey(
+    analysis_extract: AnalysisData | undefined,
+    key: string,
+    nestedKey?: string,
+    fallback: PrimitiveValue | string[] = "N/A"
+  ): PrimitiveValue | string[] {
+    const value = analysis_extract?.[key];
+    console.log(analysis_extract);
 
-      {limit <= 90 && (
-        <button onClick={() => setLimit(limit + 10)} disabled={isFetching}>
-          {isFetching ? "Loading more..." : "Show More"}
-        </button>
-      )}
+    if (nestedKey) {
+      if (typeof value === "object" && value !== null) {
+        const nestedValue = (value as NestedStructure)[nestedKey];
+        if (Array.isArray(nestedValue)) return nestedValue;
+        return typeof nestedValue !== "object" || nestedValue === null ? nestedValue ?? fallback : fallback;
+      }
+      return fallback;
+    }
+
+    if (Array.isArray(value)) return value;
+    return typeof value !== "object" || value === null ? value ?? fallback : fallback;
+  }
+
+  const getVolumeColor = (level: string) => {
+    switch (level) {
+      case "Above Average":
+        return "text-green-600";
+      case "Below Average":
+        return "text-red-500";
+      case "Average":
+        return "text-orange-500";
+      default:
+        return "text-gray-500";
+    }
+  };
+
+  const getRiskRewardColor = (level: string) => {
+    switch (level) {
+      case "Favorable":
+        return "text-green-600";
+      case "Unfavorable":
+        return "text-red-500";
+      case "Neutral":
+        return "text-orange-500";
+      default:
+        return "text-gray-500";
+    }
+  };
+
+  const getRiskRecommendationLevelColor = (level: string) => {
+    switch (level) {
+      case "High":
+        return "text-red-500";
+      case "Medium":
+        return "text-orange-500";
+      case "Low":
+        return "text-green-600";
+      default:
+        return "text-gray-500";
+    }
+  };
+
+  return (
+    <section className="text-gray-700 body-font overflow-hidden bg-white">
+      <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-4">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 w-full p-5">
+          {insights?.map((item) => (
+            <div
+              key={item.analysis_id}
+              className="rounded-2xl flex flex-col bg-white p-4 justify-between space-y-6 items-start"
+            >
+              {/* Top-left: Token image and name */}
+              <div className="flex w-full items-center mb-4">
+                <Image
+                  width={60}
+                  height={60}
+                  src={getLogoByTicker(item.token_name)}
+                  className="rounded-full"
+                  alt={item.token_name}
+                />
+                <p className="font-semibold text-lg medium ml-3">{item.token_name}</p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-1 ml-auto">
+                  {(getAnalysisExtractByKey(item.analysis_extract, "summary", "tags") as string[])?.map(
+                    (tag, index) => (
+                      <span
+                        key={index}
+                        className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-1 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 w-full">
+                <div className="w-full bg-white shadow-md p-6 rounded-2xl">
+                  <div className="flex items-center">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100">
+                      <svg
+                        className="w-4 h-4 stroke-current text-blue-600"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                        />
+                      </svg>
+                    </span>
+                    <span className="ml-2 text-sm font-medium text-gray-500">Risk Level</span>
+                  </div>
+                  <span className="block text-4xl font-semibold mt-4">
+                    {getAnalysisExtractByKey(item.analysis_extract, "recommendations", "risk_level")}
+                  </span>
+                  <div className="flex text-xs mt-3 font-medium">
+                    <span
+                      className={getRiskRewardColor(
+                        getAnalysisExtractByKey(item.analysis_extract, "risk_reward", "interpretation") as string
+                      )}
+                    >
+                      {getAnalysisExtractByKey(item.analysis_extract, "risk_reward", "ratio")}
+                    </span>
+                    <span className="ml-1 text-gray-500">
+                      {getAnalysisExtractByKey(item.analysis_extract, "risk_reward", "interpretation")} risk/reward
+                    </span>
+                  </div>
+                </div>
+                <div className="w-full bg-white shadow-md p-6 rounded-2xl">
+                  <div className="flex items-center">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-pink-100">
+                      <svg
+                        className="w-4 h-4 stroke-current text-pink-600"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </span>
+                    <span className="ml-2 text-sm font-medium text-gray-500">Volume Trend</span>
+                  </div>
+                  <span className="block text-4xl font-semibold mt-4">
+                    {getAnalysisExtractByKey(item.analysis_extract, "volume_analysis", "volume_trend")}
+                  </span>
+                  <div className="flex text-xs mt-3 font-medium">
+                    <span
+                      className={getVolumeColor(
+                        getAnalysisExtractByKey(item.analysis_extract, "volume_analysis", "relative_volume") as string
+                      )}
+                    >
+                      {getAnalysisExtractByKey(item.analysis_extract, "volume_analysis", "relative_volume")}
+                    </span>
+                    <span className="ml-1 text-gray-500">volume</span>
+                  </div>
+                </div>
+                <div className="w-full bg-white shadow-md p-6 rounded-2xl">
+                  <div className="flex items-center">
+                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-red-100">
+                      <svg
+                        className="w-4 h-4 stroke-current text-red-600"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                    </span>
+                    <span className="ml-2 text-sm font-medium text-gray-500">Overall Suggestion</span>
+                  </div>
+                  <span className="block text-3xl font-semibold mt-4">
+                    {getAnalysisExtractByKey(item.analysis_extract, "recommendations", "action_suggestion")}
+                  </span>
+                  <div className="flex text-xs mt-3 font-medium">
+                    <span
+                      className={getRiskRecommendationLevelColor(
+                        getAnalysisExtractByKey(item.analysis_extract, "recommendations", "risk_level") as string
+                      )}
+                    >
+                      {getAnalysisExtractByKey(item.analysis_extract, "recommendations", "risk_level")}
+                    </span>
+                    <span className="ml-1 text-gray-500">risk level</span>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 md:justify-between">
+                {/* Momentum */}
+                <CollapsiblePanel
+                  title="Momentum"
+                  subtitle={`${getAnalysisExtractByKey(
+                    item.analysis_extract,
+                    "momentum",
+                    "status"
+                  )} (${getAnalysisExtractByKey(item.analysis_extract, "momentum", "indicator")})`}
+                  content={<p>{getAnalysisExtractByKey(item.analysis_extract, "momentum", "momentum_comment")}</p>}
+                />
+
+                {/* Risk/Reward */}
+                <CollapsiblePanel
+                  title="Risk/Reward"
+                  subtitle={`${getAnalysisExtractByKey(
+                    item.analysis_extract,
+                    "risk_reward",
+                    "ratio"
+                  )} (${getAnalysisExtractByKey(item.analysis_extract, "risk_reward", "interpretation")})`}
+                  content={<p>{getAnalysisExtractByKey(item.analysis_extract, "risk_reward", "risk_comment")}</p>}
+                />
+
+                {/* Pattern */}
+                <CollapsiblePanel
+                  title="Pattern"
+                  subtitle={`${getAnalysisExtractByKey(item.analysis_extract, "pattern_analysis", "pattern_name")}`}
+                  content={
+                    <p>{getAnalysisExtractByKey(item.analysis_extract, "pattern_analysis", "pattern_comment")}</p>
+                  }
+                />
+
+                {/* Sentiment */}
+                <CollapsiblePanel
+                  title="Sentiment"
+                  subtitle={`${getAnalysisExtractByKey(
+                    item.analysis_extract,
+                    "sentiment_analysis",
+                    "sentiment_score"
+                  )}`}
+                  content={
+                    <p>{getAnalysisExtractByKey(item.analysis_extract, "sentiment_analysis", "sentiment_comment")}</p>
+                  }
+                />
+
+                {/* Volume */}
+                <CollapsiblePanel
+                  title="Volume Trend"
+                  subtitle={`${getAnalysisExtractByKey(item.analysis_extract, "volume_analysis", "volume_trend")}`}
+                  content={<p>{getAnalysisExtractByKey(item.analysis_extract, "volume_analysis", "volume_comment")}</p>}
+                />
+
+                {/* Volatility */}
+                <CollapsiblePanel
+                  title="Volatility"
+                  subtitle={`${getAnalysisExtractByKey(
+                    item.analysis_extract,
+                    "volatility_analysis",
+                    "volatility_level"
+                  )}`}
+                  content={
+                    <p>{getAnalysisExtractByKey(item.analysis_extract, "volatility_analysis", "volatility_comment")}</p>
+                  }
+                />
+
+                {/* Trend Analysis */}
+                <CollapsiblePanel
+                  title="Trend"
+                  subtitle={`${getAnalysisExtractByKey(
+                    item.analysis_extract,
+                    "trend_analysis",
+                    "technical_trend"
+                  )} (${getAnalysisExtractByKey(item.analysis_extract, "trend_analysis", "trend_strength")})`}
+                  content={<p>{getAnalysisExtractByKey(item.analysis_extract, "trend_analysis", "trend_comment")}</p>}
+                />
+
+                {/* Recommendation */}
+                <CollapsiblePanel
+                  title="Recommendation"
+                  subtitle={`${getAnalysisExtractByKey(item.analysis_extract, "recommendations", "action_suggestion")}`}
+                  content={<p>{getAnalysisExtractByKey(item.analysis_extract, "recommendations", "rationale")}</p>}
+                />
+
+                {/* Price Targets */}
+                {/* <CollapsiblePanel
+                  title="Price Targets"
+                  subtitle="Short, Medium, Long Term"
+                  content={
+                    <>
+                      <p>
+                        <strong>Short Term:</strong>{" "}
+                        {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "short_term")}
+                      </p>
+                      <p>
+                        <strong>Medium Term:</strong>{" "}
+                        {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "medium_term")}
+                      </p>
+                      <p>
+                        <strong>Long Term:</strong>{" "}
+                        {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "long_term")}
+                      </p>
+                      <p>{getAnalysisExtractByKey(item.analysis_extract, "price_targets", "target_comment")}</p>
+                    </>
+                  }
+                /> */}
+              </div>
+
+              {/* Support & Resistance */}
+              <div className="text-sm">
+                <p>
+                  <span className="font-semibold">Support Levels:</span>{" "}
+                  {(
+                    getAnalysisExtractByKey(item.analysis_extract, "support_resistance", "support_levels") as string[]
+                  ).join(", ")}
+                </p>
+                <p>
+                  <span className="font-semibold">Resistance Levels:</span>{" "}
+                  {(
+                    getAnalysisExtractByKey(
+                      item.analysis_extract,
+                      "support_resistance",
+                      "resistance_levels"
+                    ) as string[]
+                  ).join(", ")}
+                </p>
+                <p>{getAnalysisExtractByKey(item.analysis_extract, "support_resistance", "levels_comment")}</p>
+              </div>
+
+              {/* Summary */}
+              <div className="text-sm">
+                <p>
+                  <strong>Summary:</strong>{" "}
+                  {getAnalysisExtractByKey(item.analysis_extract, "summary", "general_summary")}
+                </p>
+              </div>
+
+              {/* Footer */}
+              <div className="flex w-full justify-end gap-5">
+                <div className="text-xs text-gray-400 mr-auto">LLM: {item.llm_provider}</div>
+                <div className="text-xs text-gray-400">Timeframe: {item.timeframe_hours}</div>
+                <div className="text-xs text-gray-400">Last Updated: {item.created_at.slice(0, 10)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {limit <= 90 && (
+          <button onClick={() => setLimit(limit + 10)} disabled={isFetching}>
+            {isFetching ? "Loading more..." : "Show More"}
+          </button>
+        )}
+      </div>
     </section>
+  );
+};
+
+type CollapsiblePanelProps = {
+  title: string;
+  subtitle: string;
+  content: React.ReactNode;
+};
+
+export const CollapsiblePanel = ({ title, subtitle, content }: CollapsiblePanelProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="border-b border-slate-200 w-full">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex justify-between items-center py-5 text-slate-800"
+      >
+        <span className="flex gap-3 w-full cursor-pointer">
+          <span className="font-semibold text-gray-700">{title}</span>
+          <span className="text-gray-800">{subtitle}</span>
+        </span>
+        <span className={`text-slate-800 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-4 h-4">
+            <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
+          </svg>
+        </span>
+      </button>
+
+      <div
+        className={`transition-all duration-300 ease-in-out overflow-hidden ${
+          isOpen ? "max-h-[500px] pb-5" : "max-h-0"
+        }`}
+      >
+        <div className="text-sm text-slate-500">{content}</div>
+      </div>
+    </div>
   );
 };

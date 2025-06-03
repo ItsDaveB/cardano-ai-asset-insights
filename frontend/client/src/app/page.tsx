@@ -4,6 +4,7 @@ import { Header } from "./components/Header";
 import { TradingInsightsList } from "./components/TradingInsightsList";
 import { ReactQueryProvider } from "./providers/ReactQueryProvider";
 import Layout from "./components/Layout";
+import "./globals.css";
 
 export default async function HomePage() {
   const queryClient = new QueryClient();

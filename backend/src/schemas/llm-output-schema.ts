@@ -129,12 +129,20 @@ export const llmInsightResponseSchema = {
         risk_reward: {
           type: "object",
           properties: {
-            ratio: { type: "number" },
+            ratio: {
+              type: "number",
+              description:
+                "The calculated risk/reward ratio (e.g., 2.5 means 2.5 reward units for every 1 unit of risk).",
+            },
             interpretation: {
               type: "string",
               enum: ["Favorable", "Unfavorable", "Neutral"],
+              description: "Qualitative assessment of the risk/reward ratio.",
             },
-            risk_comment: { type: "string" },
+            risk_comment: {
+              type: "string",
+              description: "Optional additional context or reasoning behind the interpretation.",
+            },
           },
           required: ["ratio", "interpretation"],
         },

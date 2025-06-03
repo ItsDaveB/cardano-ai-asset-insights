@@ -18,7 +18,6 @@ export class TradingInsightsCronJob {
   ) {}
 
   cronSchedule = process.env.CRON_SCHEDULE || "0 1 * * *";
-
   start() {
     cron.schedule(this.cronSchedule, async () => {
       const startTime = Date.now();

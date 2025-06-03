@@ -1,15 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
 
-type TradingInsight = {
+export type TradingInsight = {
   analysis_id: number;
   timeframe_hours: string;
   token_name: string;
   token_subject: string;
   full_output: string;
-  analysis_extract: Record<string, string>; 
+  analysis_extract: AnalysisData;
   llm_provider: string;
   created_at: string;
 };
+
+export type PrimitiveValue = string | number | boolean | null | undefined;
+
+export interface NestedStructure {
+  [key: string]: PrimitiveValue | NestedStructure;
+}
+
+type ValueOrNested = PrimitiveValue | NestedStructure;
+
+export interface AnalysisData {
+  [key: string]: ValueOrNested;
+}
 
 type Meta = {
   cached: boolean;

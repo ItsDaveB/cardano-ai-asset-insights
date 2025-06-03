@@ -1,12 +1,12 @@
-"use client"; // 👈 Required
+"use client";
 
 import React from "react";
-import Link from "next/link";
+import DarkModeToggle from "./DarkModeToggle";
 
 export const Header = () => {
   return (
     <header>
-      <Link href="/">Home</Link>
+      <DarkModeToggle />
     </header>
   );
 };

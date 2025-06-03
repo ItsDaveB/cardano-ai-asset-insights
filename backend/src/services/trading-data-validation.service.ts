@@ -20,7 +20,7 @@ export class TradingDataValidationService {
           time: Joi.date().timestamp("unix").required(),
           open: Joi.number().positive().required(),
           high: Joi.number().positive().required(),
-          low: Joi.number().positive().required(),
+          low: Joi.number().required(),
           close: Joi.number().positive().required(),
           volume: Joi.number().optional(),
         })
