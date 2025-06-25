@@ -86,15 +86,47 @@ export const llmInsightResponseSchema = {
           properties: {
             support_levels: {
               type: "array",
-              items: { type: "number" },
-              maxItems: 3,
+              maxItems: 5,
+              description: "Key support levels with associated weight (strength of support)",
+              items: {
+                type: "object",
+                properties: {
+                  price: {
+                    type: "number",
+                    description: "Support level price",
+                  },
+                  weight: {
+                    type: "number",
+                    description: "Strength or confidence of support at this price level (0-1)",
+                  },
+                },
+                required: ["price", "weight"],
+              },
             },
             resistance_levels: {
               type: "array",
-              items: { type: "number" },
-              maxItems: 3,
+              maxItems: 5,
+              description:
+                "Key resistance levels with associated weight (strength of resistance), (must be an existing price range)",
+              items: {
+                type: "object",
+                properties: {
+                  price: {
+                    type: "number",
+                    description: "Resistance level price",
+                  },
+                  weight: {
+                    type: "number",
+                    description: "Strength or confidence of resistance at this price level (0-1)",
+                  },
+                },
+                required: ["price", "weight"],
+              },
             },
-            levels_comment: { type: "string" },
+            levels_comment: {
+              type: "string",
+              description: "Commentary or context for the support and resistance levels",
+            },
           },
           required: ["support_levels"],
         },
@@ -102,16 +134,42 @@ export const llmInsightResponseSchema = {
         price_targets: {
           type: "object",
           properties: {
-            short_term: { type: "number" },
-            medium_term: { type: "number" },
-            long_term: { type: "number" },
-            target_comment: { type: "string" },
+            short_term: {
+              type: "number",
+              description: "Predicted short-term price target (e.g., days to weeks)",
+            },
+            short_term_weight: {
+              type: "number",
+              description: "Confidence level (0-1) for the short-term price target",
+            },
+            medium_term: {
+              type: "number",
+              description: "Predicted medium-term price target (e.g., weeks to months)",
+            },
+            medium_term_weight: {
+              type: "number",
+              description: "Confidence level (0-1) for the medium-term price target",
+            },
+            long_term: {
+              type: "number",
+              description: "Predicted long-term price target (e.g., months to a year)",
+            },
+            long_term_weight: {
+              type: "number",
+              description: "Confidence level (0-1) for the long-term price target",
+            },
+            target_comment: {
+              type: "string",
+              description: "Commentary or rationale behind the price targets",
+            },
           },
-          required: ["short_term"],
+          required: ["short_term", "short_term_weight"],
         },
 
         sentiment_analysis: {
           type: "object",
+          description:
+            "Analyze the overall market sentiment for the specified token based on the most recent and relevant news articles, social sentiment, and price action available online. Use grounded, factual information where possible. Summarize your findings into a sentiment score and explain the reasoning behind it.",
           properties: {
             sentiment_score: {
               type: "string",
@@ -170,7 +228,8 @@ export const llmInsightResponseSchema = {
             tags: {
               type: "array",
               items: { type: "string" },
-              description: "Optional tags like 'Breakout', 'Low Volume', 'High Risk'",
+              description:
+                "Optional tags like 'Breakout', 'Low Volume', 'High Risk', must be relevant aim for 3 or move, but less than 6.",
             },
           },
           required: ["general_summary"],

@@ -4,11 +4,11 @@ import axios from "axios";
 import { generateGeminiPrompt } from "./gemini-v2-flash-lite.prompt";
 import { TradingDataInput } from "../../../../interfaces/trading-data-input.interface";
 import { llmInsightResponseSchema } from "../../../../schemas/llm-output-schema";
-import { GeminiApiCandidate, GeminiApiResponse } from "./gemini.types";
+import { GeminiApiCandidate } from "./gemini.types";
 import logger from "../../../../utils/logger";
 
 export class GeminiV2FlashLiteProvider implements LLMProvider {
-  public readonly modelName = "gemini-2.0-flash-lite-001";
+  public readonly modelName = "gemini-2.0-flash-lite";
   private readonly endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${process.env.GCP_PROJECT_ID}/locations/us-central1/publishers/google/models/${this.modelName}:generateContent`;
   private readonly keyFilePath = "src/services/llm/providers/gcp/gcp-service-account.json";
 
@@ -21,12 +21,17 @@ export class GeminiV2FlashLiteProvider implements LLMProvider {
     });
 
     const requestBody = {
-      contents: [{ role: "user", parts: [{ text: promptText }] }],
+      contents: [
+        {
+          role: "user",
+          parts: [{ text: promptText }],
+        },
+      ],
       generationConfig: {
         responseMimeType: "application/json",
         responseSchema: llmInsightResponseSchema,
-        temperature: 0.7,
-        maxOutputTokens: 1024,
+        temperature: 0.3,
+        maxOutputTokens: 7500,
         topP: 0.8,
         topK: 40,
         candidateCount: 3,
@@ -36,7 +41,7 @@ export class GeminiV2FlashLiteProvider implements LLMProvider {
     const accessToken = await this.getAccessToken();
     logger.info(`[LLMService] GoogleAuth sucessfully setup, Access Token Received.`);
     logger.info(`[LLMService] Sending request to ${this.modelName}, for token ${data.tokenName}.`);
-    const response = await axios.post<GeminiApiResponse>(this.endpoint, requestBody, {
+    const response = await axios.post<any>(this.endpoint, requestBody, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
