@@ -205,6 +205,50 @@ export const llmInsightResponseSchema = {
           required: ["ratio", "interpretation"],
         },
 
+        visual_scores: {
+          type: "object",
+          description:
+            "Normalized values (0 to 1) for use in radar/spider or comparison charts. These values should reflect the current status of different analysis areas.",
+          properties: {
+            momentum: {
+              type: "number",
+              minimum: 0,
+              maximum: 1,
+              description: "Normalized momentum score based on the status (e.g., Neutral = 0.5)",
+            },
+            sentiment: {
+              type: "number",
+              minimum: 0,
+              maximum: 1,
+              description: "Normalized sentiment score (Positive = 1, Neutral = 0.5, Negative = 0)",
+            },
+            volatility: {
+              type: "number",
+              minimum: 0,
+              maximum: 1,
+              description: "Normalized volatility score (High = 1, Low = 0)",
+            },
+            volume: {
+              type: "number",
+              minimum: 0,
+              maximum: 1,
+              description: "Normalized volume strength (Above Avg = 1, Below Avg = 0)",
+            },
+            trend_strength: {
+              type: "number",
+              minimum: 0,
+              maximum: 1,
+              description: "Normalized trend strength (Strong = 1, Weak = 0)",
+            },
+            risk_reward: {
+              type: "number",
+              minimum: 0,
+              maximum: 1,
+              description: "Normalized risk/reward favorability score (e.g., scaled ratio or enum mapping)",
+            },
+          },
+          required: ["momentum", "sentiment", "volatility", "volume", "trend_strength", "risk_reward"],
+        },
         recommendations: {
           type: "object",
           properties: {

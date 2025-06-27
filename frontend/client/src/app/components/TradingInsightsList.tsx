@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { AnalysisData, PrimitiveValue, useTradingInsights } from "../hooks/useTradingInsights";
 import Image from "next/image";
 import { getLogoByTicker } from "../utils/tokenImages";
-import { SwarmPlot } from "@nivo/swarmplot";
+import { ResponsiveSwarmPlot } from "@nivo/swarmplot";
+import { ResponsiveRadar } from "@nivo/radar";
 
 export const TradingInsightsList = () => {
   const [limit, setLimit] = useState(10);
@@ -79,7 +80,7 @@ export const TradingInsightsList = () => {
   return (
     <section className="text-gray-700 body-font overflow-hidden bg-white">
       <div className="min-h-screen bg-gray-100 flex flex-col justify-center sm:py-4">
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 w-full p-5">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 w-full p-5">
           {insights?.map((item) => {
             const resistanceLevels =
               (getAnalysisExtractByKey(item.analysis_extract, "support_resistance", "resistance_levels") as Record<
@@ -129,8 +130,6 @@ export const TradingInsightsList = () => {
               "long_term_weight"
             ) as string;
 
-            console.log(longTermPriceTargetWeight);
-
             const parsePrices = (input: PrimitiveValue | string[]) =>
               Array.isArray(input) ? input.map(parseFloat) : input ? [parseFloat(input as string)] : [];
 
@@ -145,6 +144,38 @@ export const TradingInsightsList = () => {
             const minPrice = allPrices.length ? Math.min(...allPrices) * 0.95 : 0.8;
             const maxPrice = allPrices.length ? Math.max(...allPrices) * 1.05 : 2.0;
             const scaleWeight = (weight: string, scale = 40) => Number(weight) * scale;
+
+            const momentumScore = getAnalysisExtractByKey(item.analysis_extract, "visual_scores", "momentum") as number;
+            const sentimentScore = getAnalysisExtractByKey(
+              item.analysis_extract,
+              "visual_scores",
+              "sentiment"
+            ) as number;
+            const volatilityScore = getAnalysisExtractByKey(
+              item.analysis_extract,
+              "visual_scores",
+              "volatility"
+            ) as number;
+            const volumeScore = getAnalysisExtractByKey(item.analysis_extract, "visual_scores", "volume") as number;
+            const trendStrengthScore = getAnalysisExtractByKey(
+              item.analysis_extract,
+              "visual_scores",
+              "trend_strength"
+            ) as number;
+            const riskRewardScore = getAnalysisExtractByKey(
+              item.analysis_extract,
+              "visual_scores",
+              "risk_reward"
+            ) as number;
+
+            const radarChartData = [
+              { category: "Momentum", score: momentumScore },
+              { category: "Sentiment", score: sentimentScore },
+              { category: "Volatility", score: volatilityScore },
+              { category: "Volume", score: volumeScore },
+              { category: "Trend Strength", score: trendStrengthScore },
+              { category: "Risk/Reward", score: riskRewardScore },
+            ];
 
             return (
               <div
@@ -373,121 +404,150 @@ export const TradingInsightsList = () => {
                     content={<p>{getAnalysisExtractByKey(item.analysis_extract, "recommendations", "rationale")}</p>}
                   />
                 </div>
-                {/* Price Targets */}
-                {/* <CollapsiblePanel
-                  title="Price Targets"
-                  subtitle="Short, Medium, Long Term"
-                  content={
-                    <>
-                      <p>
-                        <strong>Short Term:</strong>{" "}
-                        {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "short_term")}
-                      </p>
-                      <p>
-                        <strong>Medium Term:</strong>{" "}
-                        {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "medium_term")}
-                      </p>
-                      <p>
-                        <strong>Long Term:</strong>{" "}
-                        {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "long_term")}
-                      </p>
-                      <p>{getAnalysisExtractByKey(item.analysis_extract, "price_targets", "target_comment")}</p>
-                    </>
-                  }
-                /> 
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="w-full h-[400px]">
+                    <ResponsiveRadar
+                      data={radarChartData}
+                      keys={["score"]}
+                      indexBy="category"
+                      maxValue={1}
+                      margin={{ top: 40, right: 80, bottom: 40, left: 80 }}
+                      curve="linearClosed"
+                      borderWidth={2}
+                      borderColor={{ from: "color" }}
+                      gridLevels={5}
+                      gridShape="circular"
+                      gridLabelOffset={36}
+                      enableDots={true}
+                      dotSize={8}
+                      dotColor={{ theme: "background" }}
+                      dotBorderWidth={2}
+                      dotBorderColor={{ from: "color" }}
+                      colors={{ scheme: "nivo" }}
+                      fillOpacity={0.25}
+                      blendMode="multiply"
+                      animate={true}
+                      isInteractive={true}
+                    />
+                  </div>
+
+                  <div className="w-full h-[400px]">
+                    <ResponsiveSwarmPlot
+                      data={[
+                        ...resistanceLevels.map(({ price, weight }, index) => ({
+                          id: `Resistance ${index + 1}`,
+                          price: parseFloat(price),
+                          label: "Resistance",
+                          weight: scaleWeight(weight),
+                          group: "price resistance",
+                          note: price,
+                        })),
+                        ...supportLevels.map(({ price, weight }, index) => ({
+                          id: `Support ${index + 1}`,
+                          price: parseFloat(price),
+                          label: `Support`,
+                          weight: scaleWeight(weight),
+                          group: "price support",
+                        })),
+                        {
+                          id: "Short Target",
+                          price: parseFloat(shortTermPriceTarget),
+                          label: "Short Target",
+                          weight: scaleWeight(shortTermPriceTargetWeight),
+                          group: "price target",
+                        },
+                        {
+                          id: "Medium Target",
+                          price: parseFloat(mediumTermPriceTarget),
+                          label: "Medium Target",
+                          weight: scaleWeight(mediumTermPriceTargetWeight),
+                          group: "price target",
+                        },
+                        {
+                          id: "Long Target",
+                          price: parseFloat(longTermPriceTarget),
+                          label: "Long Target",
+                          weight: scaleWeight(longTermPriceTargetWeight),
+                          group: "price target",
+                        },
+                      ]}
+                      groups={["price resistance", "price support", "price target"]}
+                      value="price"
+                      valueScale={{
+                        type: "linear",
+                        min: minPrice,
+                        max: maxPrice,
+                        reverse: false,
+                      }}
+                      enableGridX={false}
+                      enableGridY={false}
+                      size={{ key: "weight", values: [1, 65], sizes: [1, 100] }}
+                      forceStrength={4}
+                      simulationIterations={100}
+                      margin={{ top: 40, right: 50, bottom: 40, left: 50 }}
+                      axisBottom={{ legend: "", legendOffset: 40 }}
+                      axisLeft={{ legend: "", legendOffset: -60 }}
+                      colorBy={"group"}
+                      colors={({ group }) => {
+                        if (group === "price resistance") return "red";
+                        if (group === "price target") return "#d64dff";
+                        return "#6de28e";
+                      }}
+                      animate={true}
+                    />
+                  </div>
                 </div>
-                {/* Support & Resistance
-              <div className="text-sm">
-                <p>
-                  <span className="font-semibold">Support Levels:</span>{" "}
-                  {(
-                    getAnalysisExtractByKey(item.analysis_extract, "support_resistance", "support_levels") as string[]
-                  ).join(", ")}
-                </p>
-                <p>
-                  <span className="font-semibold">Resistance Levels:</span>{" "}
-                  {(
-                    getAnalysisExtractByKey(
-                      item.analysis_extract,
-                      "support_resistance",
-                      "resistance_levels"
-                    ) as string[]
-                  ).join(", ")}
-                </p>
-                <p>{getAnalysisExtractByKey(item.analysis_extract, "support_resistance", "levels_comment")}</p>
-             </div> */}
+
                 {/* Summary */}
                 <div className="text-sm">
                   <p>{getAnalysisExtractByKey(item.analysis_extract, "summary", "general_summary")}</p>
                 </div>
+                <div className="text-sm space-y-2">
+                  {/* Price Targets */}
+                  <div>
+                    <p className="font-semibold">Price Targets</p>
+                    <p>
+                      <span className="font-medium">Short:</span>{" "}
+                      {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "short_term")},
+                      <span className="font-medium ml-2">Medium:</span>{" "}
+                      {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "medium_term")},
+                      <span className="font-medium ml-2">Long:</span>{" "}
+                      {getAnalysisExtractByKey(item.analysis_extract, "price_targets", "long_term")}
+                    </p>
+                    <p>{getAnalysisExtractByKey(item.analysis_extract, "price_targets", "target_comment")}</p>
+                  </div>
 
-                <div className="w-full justify-start">
-                  <SwarmPlot
-                    data={[
-                      ...resistanceLevels.map(({ price, weight }, index) => ({
-                        id: `Resistance ${index + 1}`,
-                        price: parseFloat(price),
-                        label: "Resistance",
-                        weight: scaleWeight(weight),
-                        group: "price resistance",
-                        note: price,
-                      })),
-                      ...supportLevels.map(({ price, weight }, index) => ({
-                        id: `Support ${index + 1}`,
-                        price: parseFloat(price),
-                        label: `Support`,
-                        weight: scaleWeight(weight),
-                        group: "price support",
-                      })),
-                      {
-                        id: "Short Target",
-                        price: parseFloat(shortTermPriceTarget),
-                        label: "Short Target",
-                        weight: scaleWeight(shortTermPriceTargetWeight),
-                        group: "price target",
-                      },
-                      {
-                        id: "Medium Target",
-                        price: parseFloat(mediumTermPriceTarget),
-                        label: "Medium Target",
-                        weight: scaleWeight(mediumTermPriceTargetWeight),
-                        group: "price target",
-                      },
-                      {
-                        id: "Long Target",
-                        price: parseFloat(longTermPriceTarget),
-                        label: "Long Target",
-                        weight: scaleWeight(longTermPriceTargetWeight),
-                        group: "price target",
-                      },
-                    ]}
-                    groups={["price resistance", "price support", "price target"]}
-                    value="price"
-                    valueScale={{
-                      type: "linear",
-                      min: minPrice,
-                      max: maxPrice,
-                      reverse: false,
-                    }}
-                    enableGridX={false}
-                    enableGridY={false}
-                    size={{ key: "weight", values: [1, 65], sizes: [1, 100] }}
-                    forceStrength={4}
-                    simulationIterations={100}
-                    margin={{ top: 40, right: 50, bottom: 40, left: 50 }}
-                    axisBottom={{ legend: "", legendOffset: 40 }}
-                    axisLeft={{ legend: "", legendOffset: -60 }}
-                    colorBy={"group"}
-                    colors={({ group }) => {
-                      if (group === "price resistance") return "red";
-                      if (group === "price target") return "#d64dff";
-                      return "#6de28e";
-                    }}
-                    animate={true}
-                    width={600}
-                    height={400}
-                  />
+                  {/* Support & Resistance */}
+                  <div>
+                    <p className="font-semibold">Support & Resistance</p>
+                    <p>
+                      <span className="font-medium">Support:</span>{" "}
+                      {(
+                        getAnalysisExtractByKey(
+                          item.analysis_extract,
+                          "support_resistance",
+                          "support_levels"
+                        ) as Record<string, string>[]
+                      )
+                        .map((x) => x.price)
+                        ?.join(", ")}
+                    </p>
+                    <p>
+                      <span className="font-medium">Resistance:</span>{" "}
+                      {(
+                        getAnalysisExtractByKey(
+                          item.analysis_extract,
+                          "support_resistance",
+                          "resistance_levels"
+                        ) as Record<string, string>[]
+                      )
+                        .map((x) => x.price)
+                        ?.join(", ")}
+                    </p>
+                    <p>{getAnalysisExtractByKey(item.analysis_extract, "support_resistance", "levels_comment")}</p>
+                  </div>
                 </div>
+
                 {/* Footer */}
                 <div className="border-b border-gray-200 w-full mb-2" />
 
