@@ -208,7 +208,7 @@ export const TradingInsightsList = () => {
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 gap-8 w-full">
-                  <div className="w-full bg-white shadow-md p-6 rounded-2xl">
+                  <div className="w-full bg-white shadow-sm p-6 rounded-2xl border border-gray-200">
                     <div className="flex items-center">
                       <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100">
                         <svg
@@ -244,7 +244,7 @@ export const TradingInsightsList = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="w-full bg-white shadow-md p-6 rounded-2xl">
+                  <div className="w-full bg-white shadow-sm p-6 rounded-2xl border border-gray-200">
                     <div className="flex items-center">
                       <span className="flex items-center justify-center w-6 h-6 rounded-full bg-pink-100">
                         <svg
@@ -278,7 +278,7 @@ export const TradingInsightsList = () => {
                       <span className="ml-1 text-gray-500">volume</span>
                     </div>
                   </div>
-                  <div className="w-full bg-white shadow-md p-6 rounded-2xl">
+                  <div className="w-full bg-white shadow-sm p-6 rounded-2xl border border-gray-200">
                     <div className="flex items-center">
                       <span className="flex items-center justify-center w-6 h-6 rounded-full bg-red-100">
                         <svg
@@ -404,33 +404,12 @@ export const TradingInsightsList = () => {
                     content={<p>{getAnalysisExtractByKey(item.analysis_extract, "recommendations", "rationale")}</p>}
                   />
                 </div>
-                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="w-full h-[400px]">
-                    <ResponsiveRadar
-                      data={radarChartData}
-                      keys={["score"]}
-                      indexBy="category"
-                      maxValue={1}
-                      margin={{ top: 40, right: 80, bottom: 40, left: 80 }}
-                      curve="linearClosed"
-                      borderWidth={2}
-                      borderColor={{ from: "color" }}
-                      gridLevels={5}
-                      gridShape="circular"
-                      gridLabelOffset={36}
-                      enableDots={true}
-                      dotSize={8}
-                      dotColor={{ theme: "background" }}
-                      dotBorderWidth={2}
-                      dotBorderColor={{ from: "color" }}
-                      colors={{ scheme: "nivo" }}
-                      fillOpacity={0.25}
-                      blendMode="multiply"
-                      animate={true}
-                      isInteractive={true}
-                    />
-                  </div>
+                {/* Summary */}
+                <div className="text-sm">
+                  <p>{getAnalysisExtractByKey(item.analysis_extract, "summary", "general_summary")}</p>
+                </div>
 
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 bg-white shadow-sm p-6 rounded-2lg border border-gray-200">
                   <div className="w-full h-[400px]">
                     <ResponsiveSwarmPlot
                       data={[
@@ -481,7 +460,7 @@ export const TradingInsightsList = () => {
                       }}
                       enableGridX={false}
                       enableGridY={false}
-                      size={{ key: "weight", values: [1, 65], sizes: [1, 100] }}
+                      size={{ key: "weight", values: [1, 80], sizes: [1, 100] }}
                       forceStrength={4}
                       simulationIterations={100}
                       margin={{ top: 40, right: 50, bottom: 40, left: 50 }}
@@ -496,12 +475,33 @@ export const TradingInsightsList = () => {
                       animate={true}
                     />
                   </div>
+                  <div className="w-full h-[400px]">
+                    <ResponsiveRadar
+                      data={radarChartData}
+                      keys={["score"]}
+                      indexBy="category"
+                      maxValue={1}
+                      margin={{ top: 40, right: 50, bottom: 40, left: 50 }}
+                      curve="catmullRomClosed"
+                      borderWidth={2}
+                      borderColor={{ from: "color" }}
+                      gridLevels={8}
+                      gridShape="linear"
+                      gridLabelOffset={15}
+                      enableDots={true}
+                      dotSize={10}
+                      dotColor={{ theme: "background" }}
+                      dotBorderWidth={2}
+                      dotBorderColor={{ from: "color" }}
+                      colors={{ scheme: "category10" }}
+                      fillOpacity={0.35}
+                      blendMode="multiply"
+                      animate={true}
+                      isInteractive={true}
+                    />
+                  </div>
                 </div>
 
-                {/* Summary */}
-                <div className="text-sm">
-                  <p>{getAnalysisExtractByKey(item.analysis_extract, "summary", "general_summary")}</p>
-                </div>
                 <div className="text-sm space-y-2">
                   {/* Price Targets */}
                   <div>
@@ -549,8 +549,6 @@ export const TradingInsightsList = () => {
                 </div>
 
                 {/* Footer */}
-                <div className="border-b border-gray-200 w-full mb-2" />
-
                 <div className="flex w-full justify-end gap-5">
                   <div className="text-xs text-gray-400 mr-auto">LLM: {item.llm_provider}</div>
                   <div className="text-xs text-gray-400">Timeframe: {item.timeframe_hours}</div>

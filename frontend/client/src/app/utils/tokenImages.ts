@@ -71,6 +71,10 @@ export const tokenLogos = [
     ticker: "xVYFI",
     url: "https://d2wbrxwn38q552.cloudfront.net/token-logos/804f5544c1962a40546827cab750a88404dc7108c0f588b72964754f56594649.png?s=200",
   },
+  {
+    ticker: "FLOW",
+    url: "https://taptools-public.s3.amazonaws.com/src/token-logos/2d9db8a89f074aa045eab177f23a3395f62ced8b53499a9e4ad46c80464c4f57.png?s=200",
+  },
 ];
 
 export const getLogoByTicker = (ticker: string): string => {

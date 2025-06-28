@@ -39,20 +39,21 @@ export class TradingInsightsController {
       }
 
       const insights = await this.tradingInsightsService.fetchRecentTradingInsights(limit);
-      cache.set(cacheKey, insights);
+      const sortedInsights = [...insights].sort((a, b) => a.llm_provider.localeCompare(b.llm_provider));
+      cache.set(cacheKey, sortedInsights);
       logger.info(
         `[CACHE] Stored trading insights in cache (limit=${limit}) for ${(CACHE_TTL_SECONDS / 60).toFixed(1)} minute(s)`
       );
 
       const response = includeMeta
         ? {
-            data: insights,
+            data: sortedInsights,
             meta: {
               cached: false,
               expiresInSeconds: CACHE_TTL_SECONDS,
             },
           }
-        : { data: insights };
+        : { data: sortedInsights };
 
       res.status(200).json(response);
       return;
