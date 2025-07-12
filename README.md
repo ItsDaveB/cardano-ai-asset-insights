@@ -1,25 +1,35 @@
 # Cardano AI Asset Insights
 
-AI-powered insights for Cardano native assets, featuring dynamic visualizations, model-driven analysis, and a responsive UI. Built with a plug-and-play architecture for LLM provider integration (Gemini 2, 2.5, and others), this project surfaces key trading signals like trend, sentiment, and risk-reward metrics for any on-chain token.
+AI-generated trading insights for Cardano native assets — delivered through a responsive frontend and a modular backend pipeline. This project combines real-time token data, structured LLM analysis, and powerful visualizations to surface key market signals such as trend, sentiment, and risk-reward balance.
+
+The system is designed for flexibility, supporting multiple data sources and pluggable LLM providers (Gemini 2, 2.5, and others), making it easy to extend, deploy, and adapt across environments.
 
 ---
 
 ## Overview
 
-Cardano AI Asset Insights bridges structured backend intelligence with a modern, intuitive frontend. The system analyzes on-chain native assets and presents real-time insights via dynamic cards, charts, and rich visualizations. Designed with modularity in mind, the backend supports multiple LLMs, enabling flexible AI experimentation and deployment.
+Cardano AI Asset Insights is an end-to-end system for intelligent token analysis. It automatically fetches high-volume tokens, processes market data, and runs structured LLM evaluations to produce consistent, schema-driven insights.
+
+A cron-based batch job powers the backend pipeline, using OHLC and volume data to prompt a large language model for analysis. Insights are stored in a database and served through a developer-friendly API. The frontend consumes these insights and renders dynamic, mobile-responsive components with trend summaries, visual charts, and contextual tags.
+
+The backend is fully environment-driven and built for extensibility, with support for alternate data providers, custom insight schemas, and LLM response evaluation using statistical confidence scoring.
 
 ---
 
 ## Features
 
-- **Interactive UI** built in React + Tailwind CSS, optimized for desktop and mobile
-- **Dynamic asset cards** displaying trend, sentiment, momentum, and risk metrics
-- **Chart visualizations** including radar and bubble charts for quick comparison
-- **Support/resistance zone detection** with weighted confidence levels
-- **Plug-and-play LLM integration** (Gemini 2, 2.5; more via adapter interface)
-- **Real-time backend sync** with TanStack Query for efficient fetch & cache
-- **Schema-driven rendering** for consistent UI generation from any model output
-- **Cron-based pipeline** for automated insight refreshes
+- **Automated token selection** using TapTools API (24h top volume)
+- **LLM-driven insight generation** via Gemini models (Vertex AI)
+- **Flexible prompt schema** for structured, reliable model outputs
+- **Multiple response candidates** with confidence selection (avgLogprobs)
+- **Custom API** for querying insights with filters and metadata control
+- **Reactive UI** built in React and Tailwind, optimized for mobile and desktop
+- **Chart visualizations** (radar and bubble charts) for comparative token analysis
+- **Support/resistance detection** with confidence scoring
+- **Cron-based pipeline** for automated, scheduled analysis
+- **Plugin architecture** for data sources and LLM providers
+- **Developer-first tooling**: run/debug API, cron, or both with VS Code profiles
+- **Fully configurable** via `.env` — including schedule, token count, intervals, cache TTL, DB settings, and LLM project config
 
 ---
 
@@ -115,15 +125,3 @@ Contributions are welcome! Feel free to open an issue or submit a pull request i
 ## License
 
 This project is licensed under the MIT License.
-
-```
-
-```
-
-```
-
-```
-
-```
-
-```
