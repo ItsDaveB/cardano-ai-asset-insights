@@ -33,7 +33,7 @@ The backend is fully environment-driven and built for extensibility, with suppor
 
 ---
 
-## 🎥 Demo
+## Demo
 
 - [Frontend Walkthrough](https://www.youtube.com/watch?v=wwYgbmr8BEw) – Shows the UI displaying AI-generated insights for Cardano tokens.
 - [Backend Pipeline Demo](https://youtu.be/dL4XNo5C1Tc) – Demonstrates the full backend process: token selection, LLM analysis, API response, structure etc.
@@ -98,7 +98,7 @@ npm install
 npm run run:cron
 ```
 
-### 4. Start the Frontend
+### 5. Start the Frontend
 
 ```bash
 cd frontend/client
