@@ -9,7 +9,7 @@ export class TradingDataService {
   async fetchTradingData(topVolumeToken: TopVolumeToken): Promise<TradingDataInput> {
     try {
       const interval = process.env.OHLC_INTERVAL ?? "4h";
-      const numberOfIntervals = Number(process.env.OHLC_NUM_OF_INTERVALS ?? 126); //  24 ÷ 4 = 6 candles per day, 21 days × 6 = 126 candles.
+      const numberOfIntervals = Number(process.env.OHLC_NUM_OF_INTERVALS ?? 126); // fallback 24 ÷ 4 = 6 candles per day, 21 days × 6 = 126 candles.
       const url = `https://openapi.taptools.io/api/v1/token/ohlcv?unit=${topVolumeToken.unit}&interval=${interval}&numIntervals=${numberOfIntervals}`;
 
       logger.info(
