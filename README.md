@@ -122,7 +122,7 @@ Contributions are welcome! Feel free to open an issue or submit a pull request i
 
 ## Supporting References
 
-- [LLM Model Research & Evaluation (Milestone 1)](https://github.com/ItsDaveB/ai-trading-insights-design/blob/main/docs/model-research.md)
+- [LLM Model Research & Evaluation (Milestone 1)](https://github.com/ItsDaveB/ai-trading-insights-design/blob/main/reports/milestone-one/research-and-project-design.md)
   – Comparative analysis of LLMs used to inform schema design and integration strategy.
 
 ## License
