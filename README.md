@@ -33,12 +33,10 @@ The backend is fully environment-driven and built for extensibility, with suppor
 
 ---
 
-## Demo
+## 🎥 Demo
 
-Watch the full demonstration:
-[https://www.youtube.com/watch?v=wwYgbmr8BEw](https://www.youtube.com/watch?v=wwYgbmr8BEw)
-
----
+- [Frontend Walkthrough](https://www.youtube.com/watch?v=wwYgbmr8BEw) – Shows the UI displaying AI-generated insights for Cardano tokens.
+- [Backend Pipeline Demo](https://youtu.be/dL4XNo5C1Tc) – Demonstrates the full backend process: token selection, LLM analysis, API response, structure etc.
 
 ## LLM Provider Integration
 
@@ -121,6 +119,11 @@ Open the Run & Debug panel in VS Code and select a profile to start.
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request if you have suggestions or improvements.
+
+## Supporting References
+
+- [LLM Model Research & Evaluation (Milestone 1)](https://github.com/ItsDaveB/ai-trading-insights-design/blob/main/docs/model-research.md)
+  – Comparative analysis of LLMs used to inform schema design and integration strategy.
 
 ## License
 
