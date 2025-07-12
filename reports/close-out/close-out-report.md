@@ -107,9 +107,11 @@ While the original target integration (ADA Markets) became unavailable due to a 
 
 ## Links to Demonstrations, Reports, and Resources
 
-### Video Demonstration
+### Video Demonstrations
 
-- [Backend Pipeline Walkthrough – Final Close-out Video]()
+- [Final Close-out Video](https://youtu.be/jZCvEnBEZo8)
+- [Milestone 3 UI Integration Video](https://www.youtube.com/watch?v=wwYgbmr8BEw)
+- [Milestone 2 Backend Integration Video](https://youtu.be/dL4XNo5C1Tc)
 
 ### Project Reports and Documentation
 
