@@ -54,3 +54,7 @@ Once completed, rename the file to remove the `.example` suffix so it becomes:
 ```
 gcp-service-account.json
 ```
+
+### 6. Final Integration
+
+Once your provider is set up and registered, you can integrate it into the application by following the steps outlined in the [Provider Integration Guide](../../docs/Provider-Integration.md).

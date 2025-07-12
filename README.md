@@ -30,6 +30,19 @@ Watch the full demonstration:
 
 ---
 
+## LLM Provider Integration
+
+The backend supports modular integration with LLM providers. Current implementations include:
+
+- **Gemini 2**
+- **Gemini 2.5**
+
+To configure the GCP Gemini provider using Vertex AI, refer to the  
+[Vertex AI Setup Guide](./backend/src/services/llm/providers/gcp/docs/GCP-Provider-Setup.md).
+
+To learn how to add and register a new provider, see the  
+[Provider Integration Guide](./backend/src/services/llm/providers/docs/Provider-Integration.md).
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request if you have suggestions or improvements.
