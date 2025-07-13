@@ -33,6 +33,10 @@ The backend is fully environment-driven and built for extensibility, with suppor
 
 ---
 
+## Visual
+
+<img width="1125" height="1362" alt="image" src="https://github.com/user-attachments/assets/cf2072be-67d9-4256-84af-0af5450cae9a" />
+
 ## Demo
 
 - [Frontend Walkthrough](https://www.youtube.com/watch?v=wwYgbmr8BEw) – Shows the UI displaying AI-generated insights for Cardano tokens.
