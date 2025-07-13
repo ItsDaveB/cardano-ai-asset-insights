@@ -113,6 +113,9 @@ While the original target integration (ADA Markets) became unavailable due to a 
 - [Milestone 3 UI Integration Video](https://www.youtube.com/watch?v=wwYgbmr8BEw)
 - [Milestone 2 Backend Integration Video](https://youtu.be/dL4XNo5C1Tc)
 
+### Visual Example
+<img width="1125" height="1362" alt="image" src="https://github.com/user-attachments/assets/cf2072be-67d9-4256-84af-0af5450cae9a" />
+
 ### Project Reports and Documentation
 
 - [Project Design & Research – Milestone 1](https://github.com/ItsDaveB/cardano-ai-asset-insights-research/blob/main/reports/milestone-one/research-and-project-design.md)
