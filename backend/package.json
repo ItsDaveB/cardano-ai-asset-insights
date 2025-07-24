@@ -7,7 +7,9 @@
     "debug:api": "nodemon --watch src --exec \"tsc && node --inspect dist/api-server.js\"",
     "run:cron": "nodemon --watch src --exec \"tsc && node dist/cron-runner.js\"",
     "debug:cron": "nodemon --watch src --exec \"tsc && node --inspect dist/cron-runner.js\"",
-    "run:both": "concurrently \"npm run debug:api\" \"npm run run:cron\""
+    "run:both": "concurrently \"npm run debug:api\" \"npm run run:cron\"",
+    "build": "tsc",
+    "start": "node dist/api-server.js"
   },
   "nodemonConfig": {
     "watch": [
