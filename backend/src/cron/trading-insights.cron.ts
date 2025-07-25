@@ -3,9 +3,9 @@ import { Service } from "typedi";
 import TradingDataService from "../services/trading-data.service";
 import TradingDataValidationService from "../services/trading-data-validation.service";
 import { LLMService } from "../services/llm/llm.service";
-import { TradingInsightsRepository } from "../repositories/trading-insights.repository";
 import TokenCriteriaService from "../services/token-criteria.service";
 import logger from "../utils/logger";
+import { TradingInsightsService } from "../services/trading-insights.service";
 
 @Service()
 export class TradingInsightsCronJob {
@@ -14,7 +14,7 @@ export class TradingInsightsCronJob {
     private tradingDataService: TradingDataService,
     private tradingDataValidationService: TradingDataValidationService,
     private llmService: LLMService,
-    private tradingInsightsRepository: TradingInsightsRepository
+    private tradingInsightsService: TradingInsightsService
   ) {
     this.performTradingInsights();
   }
@@ -39,7 +39,7 @@ export class TradingInsightsCronJob {
         const tradingInsights = await this.llmService.getInsightsFromAllProviders(tradingDataInput);
 
         for (const insight of tradingInsights) {
-          await this.tradingInsightsRepository.upsertInsight({
+          await this.tradingInsightsService.upsertInsight({
             token_subject: tradingDataInput.tokenSubject,
             token_name: tradingDataInput.tokenName,
             timeframe_hours: tradingDataInput.timeframeHours,

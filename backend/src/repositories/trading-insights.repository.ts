@@ -6,6 +6,7 @@ const CONFLICT_FIELDS: (keyof TradingInsightsEntity)[] = ["token_subject", "llm_
 
 @Service()
 export class TradingInsightsRepository {
+
   private readonly repo = AppDataSource.getRepository(TradingInsightsEntity);
 
   async upsertInsight(data: Partial<TradingInsightsEntity>) {

@@ -8,7 +8,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const [queryClient] = useState(() => new QueryClient());
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="">
       <body className="bg-gray-50 text-black dark:bg-gray-900 dark:text-white">
         <QueryClientProvider client={queryClient}>
           <HydrationBoundary>{children}</HydrationBoundary>

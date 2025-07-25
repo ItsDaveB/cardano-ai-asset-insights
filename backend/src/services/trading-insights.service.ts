@@ -1,12 +1,31 @@
 import { Service } from "typedi";
 import { TradingInsightsRepository } from "../repositories/trading-insights.repository";
 import { TradingInsightsEntity } from "../entities/trading-insights.entity";
+import { TradingInsightsStaticRepository } from "../repositories/trading-insights.static.repository";
+import { initializeDatabase } from "../database/connection";
 
 @Service()
 export class TradingInsightsService {
-  constructor(private readonly tradingInsightsRepository: TradingInsightsRepository) {}
+  private readonly tradingInsightRepository: TradingInsightsRepository | TradingInsightsStaticRepository;
+
+  constructor(
+    private readonly tradingInsightsRepository: TradingInsightsRepository,
+    private readonly tradingInsightsStaticRepository: TradingInsightsStaticRepository
+  ) {
+    this.tradingInsightRepository = this.chooseStorageBackend();
+  }
+
+  private chooseStorageBackend() {
+    const useStaticData = process.env.USE_STATIC_DATA === "true";
+    if (!useStaticData) initializeDatabase();
+    return useStaticData ? this.tradingInsightsStaticRepository : this.tradingInsightsRepository;
+  }
 
   async fetchRecentTradingInsights(limit = 10): Promise<TradingInsightsEntity[]> {
-    return this.tradingInsightsRepository.getLatestTradingInsights(limit);
+    return this.tradingInsightRepository.getLatestTradingInsights(limit);
+  }
+
+  async upsertInsight(data: Partial<TradingInsightsEntity>) {
+    return this.tradingInsightRepository.upsertInsight(data);
   }
 }

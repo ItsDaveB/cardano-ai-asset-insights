@@ -120,6 +120,19 @@ VS Code launch profiles are included for debugging:
 
 Open the Run & Debug panel in VS Code and select a profile to start.
 
+## Static Data Mode (`USE_STATIC_DATA=true`)
+
+When the environment variable `USE_STATIC_DATA=true` is set, the application switches to using a static data storage approach. In this mode:
+
+- **Data is stored in a JSON file in Cloud Storage** rather than in a Cloud SQL PostgreSQL instance.
+- **Operational costs are significantly reduced**, as storing and accessing data from Cloud Storage is far more cost-effective than maintaining a Cloud SQL instance.
+- **The application supports both dynamic (SQL) and static (JSON) modes**, and this flag allows you to toggle between them as needed.
+- **Insights will be both stored and retrieved** from the JSON file in Cloud Storage.
+
+### Required Permissions
+
+To enable this mode, make sure the service account used by Vertex AI has the **Storage Admin** role (`roles/storage.admin`). This permission is necessary to allow reading from and writing to the Cloud Storage bucket.
+
 ## Contributing
 
 Contributions are welcome! Feel free to open an issue or submit a pull request if you have suggestions or improvements.
