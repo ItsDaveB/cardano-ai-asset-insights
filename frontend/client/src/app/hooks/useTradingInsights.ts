@@ -35,8 +35,6 @@ type FetchTradingInsightsOptions = {
 
 type TradingInsightsResponse = TradingInsight[] | { data: TradingInsight[]; meta: Meta };
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
-
 const fetchTradingInsights = async ({
   limit = 10,
   includeMeta = false,
@@ -46,7 +44,7 @@ const fetchTradingInsights = async ({
     includeMeta: includeMeta.toString(),
   });
 
-  const response = await fetch(`${baseUrl}/api/trading-insights?${params}`);
+  const response = await fetch(`/api/private-api-proxy?${params}`);
   if (!response.ok) {
     throw new Error("Failed to fetch trading insights");
   }
