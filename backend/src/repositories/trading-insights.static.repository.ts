@@ -5,8 +5,6 @@ import { TradingInsightsEntity } from "../entities/trading-insights.entity";
 const BUCKET_NAME = "cardano-ai-trading-insights";
 const FILE_NAME = "trading-insights.json";
 
-const CONFLICT_FIELDS: (keyof TradingInsightsEntity)[] = ["token_subject", "llm_provider", "timeframe_hours"];
-
 type StoredInsight = Omit<TradingInsightsEntity, "created_at"> & {
   created_at: string;
 };
@@ -37,33 +35,34 @@ export class TradingInsightsStaticRepository {
     return data.reduce((max, d) => Math.max(max, d.analysis_id), 0) + 1;
   }
 
-  async upsertInsight(data: Partial<TradingInsightsEntity>) {
-    const insights = await this.loadData();
+  async replaceInsights(newEntries: Partial<TradingInsightsEntity>[], timeframe_hours: string, llm_provider: string) {
+    const allInsights = await this.loadData();
 
-    const index = insights.findIndex((entry) => CONFLICT_FIELDS.every((field) => entry[field] === data[field]));
+    const remainingInsights = allInsights.filter(
+      (entry) => entry.timeframe_hours !== timeframe_hours || entry.llm_provider !== llm_provider
+    );
 
     const now = new Date().toISOString();
+    let nextId = this.getNextId(remainingInsights);
 
-    if (index >= 0) {
-      insights[index] = {
-        ...insights[index],
-        ...data,
-        created_at: insights[index].created_at,
-      };
-    } else {
-      insights.push({
-        analysis_id: this.getNextId(insights),
-        token_name: data.token_name!,
-        token_subject: data.token_subject!,
-        llm_provider: data.llm_provider!,
-        timeframe_hours: data.timeframe_hours!,
-        full_output: data.full_output!,
-        analysis_extract: data.analysis_extract || {},
-        created_at: now,
-      });
-    }
+    const newFormatted: StoredInsight[] = newEntries.map((data) => ({
+      analysis_id: nextId++,
+      token_name: data.token_name!,
+      token_subject: data.token_subject!,
+      llm_provider,
+      timeframe_hours,
+      full_output: data.full_output!,
+      analysis_extract: data.analysis_extract || {},
+      created_at: now,
+    }));
 
-    await this.saveData(insights);
+    const finalData = [...remainingInsights, ...newFormatted];
+
+    console.log(`✅ Replacing ${allInsights.length - remainingInsights.length} old entries`);
+    console.log(`🆕 Adding ${newFormatted.length} new entries`);
+    console.log(`📄 Final file size: ${finalData.length} insights`);
+
+    await this.saveData(finalData);
   }
 
   async getLatestTradingInsights(limit: number): Promise<TradingInsightsEntity[]> {

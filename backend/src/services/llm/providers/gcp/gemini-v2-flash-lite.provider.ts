@@ -10,7 +10,7 @@ import logger from "../../../../utils/logger";
 export class GeminiV2FlashLiteProvider implements LLMProvider {
   public readonly modelName = "gemini-2.0-flash-lite";
   private readonly endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${process.env.GCP_PROJECT_ID}/locations/us-central1/publishers/google/models/${this.modelName}:generateContent`;
-  private readonly keyFilePath = "src/services/llm/providers/gcp/gcp-service-account.json";
+  // private readonly keyFilePath = "src/services/llm/providers/gcp/gcp-service-account.json";
 
   async generateInsights(data: TradingDataInput): Promise<LLMResult> {
     const promptText = generateGeminiPrompt({
@@ -72,7 +72,7 @@ export class GeminiV2FlashLiteProvider implements LLMProvider {
 
   private async getAccessToken(): Promise<string> {
     const auth = new GoogleAuth({
-      keyFile: this.keyFilePath,
+      // keyFile: this.keyFilePath,
       scopes: "https://www.googleapis.com/auth/cloud-platform",
     });
 

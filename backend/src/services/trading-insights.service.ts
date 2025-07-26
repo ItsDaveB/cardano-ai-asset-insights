@@ -25,7 +25,11 @@ export class TradingInsightsService {
     return this.tradingInsightRepository.getLatestTradingInsights(limit);
   }
 
-  async upsertInsight(data: Partial<TradingInsightsEntity>) {
-    return this.tradingInsightRepository.upsertInsight(data);
+  async replaceInsights(data: Partial<TradingInsightsEntity>[], timeframe_hours: string, llm_provider: string) {
+    if (!data.length) {
+      throw new Error("No insights provided to replace.");
+    }
+
+    return this.tradingInsightRepository.replaceInsights(data, timeframe_hours, llm_provider);
   }
 }

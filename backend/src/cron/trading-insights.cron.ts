@@ -6,6 +6,7 @@ import { LLMService } from "../services/llm/llm.service";
 import TokenCriteriaService from "../services/token-criteria.service";
 import logger from "../utils/logger";
 import { TradingInsightsService } from "../services/trading-insights.service";
+import { TradingInsightsEntity } from "src/entities/trading-insights.entity";
 
 @Service()
 export class TradingInsightsCronJob {
@@ -32,24 +33,34 @@ export class TradingInsightsCronJob {
     logger.info("AI Analysis batch process started.");
 
     try {
-      const filteredTokensByCriteria = await this.tokenCriteriaService.fetchTopVolumeTokens();
-      for (const token of filteredTokensByCriteria) {
-        const tradingData = await this.tradingDataService.fetchTradingData(token);
-        const tradingDataInput = this.tradingDataValidationService.validate(tradingData);
-        const tradingInsights = await this.llmService.getInsightsFromAllProviders(tradingDataInput);
+      const filteredTokens = await this.tokenCriteriaService.fetchTopVolumeTokens();
 
-        for (const insight of tradingInsights) {
-          await this.tradingInsightsService.upsertInsight({
-            token_subject: tradingDataInput.tokenSubject,
-            token_name: tradingDataInput.tokenName,
-            timeframe_hours: tradingDataInput.timeframeHours,
+      const grouped: Record<string, Partial<TradingInsightsEntity>[]> = {};
+
+      for (const token of filteredTokens) {
+        const tradingData = await this.tradingDataService.fetchTradingData(token);
+        const input = this.tradingDataValidationService.validate(tradingData);
+        const insights = await this.llmService.getInsightsFromAllProviders(input);
+
+        for (const insight of insights) {
+          const key = `${insight.provider}|${input.timeframeHours}`;
+          const entity: Partial<TradingInsightsEntity> = {
+            token_subject: input.tokenSubject,
+            token_name: input.tokenName,
+            timeframe_hours: input.timeframeHours,
             full_output: insight.result.fullOutput,
             analysis_extract: insight.result.analysisExtract,
             llm_provider: insight.provider,
-          });
+          };
 
+          (grouped[key] ||= []).push(entity);
           storedCount++;
         }
+      }
+
+      for (const [key, batchOfEntries] of Object.entries(grouped)) {
+        const [provider, timeframe] = key.split("|");
+        await this.tradingInsightsService.replaceInsights(batchOfEntries, timeframe, provider);
       }
 
       const duration = ((Date.now() - startTime) / 1000).toFixed(2);

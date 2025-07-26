@@ -6,6 +6,7 @@ import logger from "../utils/logger";
 @Service()
 export class TokenCriteriaService {
   private readonly endpoint = "https://openapi.taptools.io/api/v1/token/top/volume";
+  private readonly stableCoinTickerExclusions: string[] = ["usdm", "usda", "iusd", "djed"];
 
   async fetchTopVolumeTokens(): Promise<TopVolumeToken[]> {
     try {
@@ -35,12 +36,14 @@ export class TokenCriteriaService {
         },
       });
 
-      const tokens: TopVolumeToken[] = response.data.map((item: any) => ({
-        price: item.price,
-        ticker: item.ticker,
-        unit: item.unit,
-        volume: item.volume,
-      }));
+      const tokens: TopVolumeToken[] = response.data
+        .map((item: any) => ({
+          price: item.price,
+          ticker: item.ticker,
+          unit: item.unit,
+          volume: item.volume,
+        }))
+        .filter((token: TopVolumeToken) => !this.stableCoinTickerExclusions.includes(token.ticker.toLowerCase()));
 
       const tokenTickers = tokens.map((t) => t.ticker).join(", ");
 
