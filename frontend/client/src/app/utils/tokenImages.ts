@@ -78,8 +78,5 @@ export const tokenLogos = [
 ];
 
 export const getLogoByTicker = (ticker: string): string => {
-  return (
-    tokenLogos.find((x) => x.ticker.toUpperCase() === ticker.toUpperCase())?.url ??
-    "https://cryptologos.cc/logos/cardano-ada-logo.svg?v=040"
-  );
+  return tokenLogos.find((x) => x.ticker.toUpperCase() === ticker.toUpperCase())?.url ?? "";
 };

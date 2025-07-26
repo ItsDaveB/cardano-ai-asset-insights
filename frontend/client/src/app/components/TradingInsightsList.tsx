@@ -184,13 +184,20 @@ export const TradingInsightsList = () => {
               >
                 {/* Top-left: Token image and name */}
                 <div className="flex w-full items-center mb-4">
-                  <Image
-                    width={60}
-                    height={60}
-                    src={getLogoByTicker(item.token_name)}
-                    className="rounded-full"
-                    alt={item.token_name}
-                  />
+                  {getLogoByTicker(item.token_name) ? (
+                    <Image
+                      width={60}
+                      height={60}
+                      src={getLogoByTicker(item.token_name)}
+                      className="rounded-full"
+                      alt={item.token_name}
+                    />
+                  ) : (
+                    <div className="inline-flex items-center justify-center w-12 h-12 text-xl text-white bg-indigo-500 rounded-full">
+                      {item.token_name.slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+
                   <p className="font-semibold text-lg medium ml-3">{item.token_name}</p>
 
                   {/* Tags */}
