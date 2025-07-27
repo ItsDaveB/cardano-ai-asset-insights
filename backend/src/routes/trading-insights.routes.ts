@@ -2,12 +2,18 @@ import { Router } from "express";
 import { Container } from "typedi";
 import { TradingInsightsController } from "../controllers/trading-insights.controller";
 import { TradingInsightsService } from "../services/trading-insights.service";
+import { TradingInsightsCronService } from "../services/trading-insights.cron.service";
+import { CronController } from "../controllers/cron-integration.controller";
 
 const router = Router();
 
 const tradingInsightsService = Container.get(TradingInsightsService);
-const controller = new TradingInsightsController(tradingInsightsService);
+const tradingInsightsController = new TradingInsightsController(tradingInsightsService);
 
-router.get("/trading-insights", controller.getAllTradingInsights.bind(controller));
+const cronService = Container.get(TradingInsightsCronService);
+const cronController = new CronController(cronService);
+
+router.get("/trading-insights", tradingInsightsController.getAllTradingInsights);
+router.post("/run-trading-insights", cronController.runTradingInsights);
 
 export default router;
