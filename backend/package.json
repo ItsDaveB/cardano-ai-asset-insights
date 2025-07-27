@@ -5,8 +5,8 @@
   "scripts": {
     "run:api": "nodemon --watch src --exec \"tsc && node dist/api-server.js\"",
     "debug:api": "nodemon --watch src --exec \"tsc && node --inspect dist/api-server.js\"",
-    "run:cron": "nodemon --watch src --exec \"tsc && node dist/cron-runner.js\"",
-    "debug:cron": "nodemon --watch src --exec \"tsc && node --inspect dist/cron-runner.js\"",
+    "run:cron": "nodemon --watch src --exec \"tsc && node dist/run-cron-once.js\"",
+    "debug:cron": "nodemon --watch src --exec \"tsc && node --inspect dist/run-cron-once.js\"",
     "run:both": "concurrently \"npm run debug:api\" \"npm run run:cron\"",
     "build": "tsc",
     "start": "node dist/api-server.js"

@@ -39,7 +39,7 @@ export class TradingInsightsStaticRepository {
     const allInsights = await this.loadData();
 
     const remainingInsights = allInsights.filter(
-      (entry) => entry.timeframe_hours !== timeframe_hours || entry.llm_provider !== llm_provider
+      (entry) => !(entry.timeframe_hours === timeframe_hours && entry.llm_provider === llm_provider)
     );
 
     const now = new Date().toISOString();
