@@ -14,15 +14,21 @@ export async function GET(request: NextRequest): Promise<Response> {
     const auth = new GoogleAuth();
     const client = await auth.getIdTokenClient(targetAudience);
 
-    const response = await client.request({ url: apiURL });
+    const response = await client.request({
+      url: apiURL,
+      headers: {
+        "x-internal-auth": process.env.INTERNAL_API_SECRET!,
+      },
+    });
 
     return new Response(JSON.stringify(response.data), {
       status: response.status,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error occurred";
-
     console.error("Cloud Run proxy error:", errorMessage);
 
     return new Response(JSON.stringify({ error: errorMessage }), {
