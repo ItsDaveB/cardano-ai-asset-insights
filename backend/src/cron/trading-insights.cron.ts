@@ -20,17 +20,17 @@ export class TradingInsightsCronJob {
 
   private cronSchedule = process.env.CRON_SCHEDULE || "0 1 * * *";
 
-  public start(): void {
+  public startCronForSchedule(): void {
     cron.schedule(this.cronSchedule, async () => {
-      await this.performTradingInsights();
+      await this.performTradingInsightAnalysis();
     });
   }
 
-  public async run(): Promise<void> {
-    await this.performTradingInsights();
+  public async runOnDemand(): Promise<void> {
+    await this.performTradingInsightAnalysis();
   }
 
-  private async performTradingInsights(): Promise<void> {
+  private async performTradingInsightAnalysis(): Promise<void> {
     const startTime = Date.now();
     let storedCount = 0;
     logger.info("AI Analysis batch process started.");

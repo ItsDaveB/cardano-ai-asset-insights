@@ -5,7 +5,7 @@ import { TradingInsightsCronService } from "src/services/trading-insights.cron.s
 export class CronController {
   constructor(private readonly cronService: TradingInsightsCronService) {}
 
-  runTradingInsights = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+  runOnDemandTradingInsightsCron = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       await this.cronService.runOnce();
       res.status(200).json({ message: "Trading insights task completed" });

@@ -14,6 +14,6 @@ const cronService = Container.get(TradingInsightsCronService);
 const cronController = new CronController(cronService);
 
 router.get("/trading-insights", tradingInsightsController.getAllTradingInsights);
-router.post("/run-trading-insights", cronController.runTradingInsights);
+router.post("/run-trading-insights", cronController.runOnDemandTradingInsightsCron);
 
 export default router;

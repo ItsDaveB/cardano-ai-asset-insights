@@ -1,0 +1,3 @@
+### On Demand Trigger Cron Job to run trading insights analysis.
+POST {{baseUrl}}/api/run-trading-insights
+Accept: application/json
